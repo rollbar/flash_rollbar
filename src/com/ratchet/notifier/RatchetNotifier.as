@@ -35,15 +35,18 @@ package com.ratchet.notifier {
         private var swfUrl:String;
         private var embeddedUrl:String;
         private var queryString:String;
+        private var serverData:Object;
 
         private var itemCount:int = 0;
 
         protected function RatchetNotifier(accessToken:String,
                                            environment:String,
-                                           user_ip:String=null,
+                                           userIp:String=null,
                                            serverData:Object=null) {
             this.accessToken = accessToken;
             this.environment = environment;
+            this.serverData = serverData || {};
+            this.userIp = userIp;
             
             swfUrl = unescape(LoaderInfo(this.root.loaderInfo).url);
             embeddedUrl = getEmbeddedUrl();
@@ -81,7 +84,7 @@ package com.ratchet.notifier {
                 client: {
                     browser: browser,
                     runtime: int(getTimer() - startTime),
-                    swfUrl: swfUrl,
+                    swf_url: swfUrl,
                     flash_player: {
                         freeMemory: System.freeMemory,
                         privateMemory: System.privateMemory,
@@ -107,10 +110,7 @@ package com.ratchet.notifier {
                     }
                 },
                 server: server,
-                notifier: {
-                    name: "flash_ratchet",
-                    version: 1.0,
-                },
+                notifier: NOTIFIER_DATA,
                 data: {
                     environment: environment,
                     body: {

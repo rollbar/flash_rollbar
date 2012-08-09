@@ -1,11 +1,20 @@
 package com.ratchet.notifier {
 
+    import flash.display.DisplayObject;
+    import flash.display.LoaderInfo;
+
     import flash.errors.IllegalOperationError;
+
     import flash.events.Event;
+    import flash.events.ErrorEvent;
     import flash.events.EventDispatcher;
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
+    import flash.events.IEventDispatcher;
     import flash.events.SecurityErrorEvent;
+    import flash.events.UncaughtErrorEvent;
+
+    import flash.external.ExternalInterface;
 
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
@@ -13,20 +22,21 @@ package com.ratchet.notifier {
     import flash.net.URLRequestMethod;
 
     import flash.system.Capabilities;
+    import flash.system.System;
 
-    import com.ratchet.json.JSON;
-    
+    import flash.utils.getTimer;
+
     [Event(name="complete", type="flash.events.Event")]
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
     [Event(name="ioError", type="flash.events.IOErrorEvent")]
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
-    public class RatchetNotifier extends EventDispatcher {
+    public class RatchetNotifier extends DisplayObject {
 
         private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:String = {name: "flash_ratchet", version: 1.0};
+        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: 1.0};
         private static const MAX_ITEM_COUNT:int = 5;
 
-        private static instance:RatchetNotifier = null;
+        private static var instance:RatchetNotifier = null;
         
         private var loader:URLLoader;
 
@@ -36,17 +46,25 @@ package com.ratchet.notifier {
         private var embeddedUrl:String;
         private var queryString:String;
         private var serverData:Object;
-
         private var itemCount:int = 0;
+        private var submitUrl:String;
+        private var maxItemCount:int;
+        private var userIp:String;
+        private var startTime:int;
 
-        protected function RatchetNotifier(accessToken:String,
-                                           environment:String,
-                                           userIp:String=null,
-                                           serverData:Object=null) {
+        public function RatchetNotifier(accessToken:String,
+                                        environment:String,
+                                        userIp:String=null,
+                                        serverData:Object=null,
+                                        submitUrl:String=null,
+                                        maxItemCount:int=5) {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};
             this.userIp = userIp;
+            this.submitUrl = submitUrl || API_ENDPONT_URL;
+            this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
+            this.startTime = getTimer();
             
             swfUrl = unescape(LoaderInfo(this.root.loaderInfo).url);
             embeddedUrl = getEmbeddedUrl();
@@ -59,21 +77,28 @@ package com.ratchet.notifier {
             loader.addEventListener(IOErrorEvent.IO_ERROR, handleUrlLoaderEvent);
             loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
             loader.addEventListener(Event.COMPLETE, handleUrlLoaderEvent);
+
+            // Register for uncaught errors if >= 10.1.
+            if(loaderInfo.hasOwnProperty('uncaughtErrorEvents')) {
+                var uncaughtErrorEvents:IEventDispatcher = IEventDispatcher(loaderInfo["uncaughtErrorEvents"]);
+                uncaughtErrorEvents.addEventListener("uncaughtError", handleUncaughtError);
+            }
         }
 
         public function handleError(err:Error):void {
             handleStackTrace(err.getStackTrace());
         }
 
-        public function handleError(err:ErrorEvent):void {
-            handleStackTrace(err.getStackTrace());
+        public function handleErrorEvent(event:ErrorEvent):void {
+            handleStackTrace(buildErrorEventStackTrace(event));
         }
 
         public function buildPayload(stackTrace:String):Object {
             var stackTraceObj:Object = parseDataFromStackTrace(stackTrace);
+            var now:Number = getTimer();
             var payload:Object = {
                 accessToken: accessToken,
-                timestamp: int(getTimer()),
+                timestamp: int(now),
                 platform: "flash",
                 language: "as3",
                 request: {
@@ -82,13 +107,13 @@ package com.ratchet.notifier {
                     user_ip: userIp
                 },
                 client: {
-                    browser: browser,
-                    runtime: int(getTimer() - startTime),
+                    browser: getBrowserUserAgent(),
+                    runtime: int(now - startTime),
                     swf_url: swfUrl,
                     flash_player: {
                         freeMemory: System.freeMemory,
                         privateMemory: System.privateMemory,
-                        totalMemory: System.totalMemory
+                        totalMemory: System.totalMemory,
                         capabilities: {
                             avHardwareDisable: Capabilities.avHardwareDisable,
                             cpuArchitecture: Capabilities.cpuArchitecture,
@@ -109,7 +134,7 @@ package com.ratchet.notifier {
                         }
                     }
                 },
-                server: server,
+                server: serverData,
                 notifier: NOTIFIER_DATA,
                 data: {
                     environment: environment,
@@ -117,7 +142,7 @@ package com.ratchet.notifier {
                         trace: {
                             frames: stackTraceObj.frames,
                             exception: {
-                                class: stackTraceObj.class,
+                                'class': stackTraceObj.className,
                                 message: stackTraceObj.message
                             }
                         }
@@ -135,16 +160,35 @@ package com.ratchet.notifier {
             loader = null;
         }
 
+        private function buildErrorEventStackTrace(event:ErrorEvent):String {
+            return 'error event stack trace. Implement me';
+        }
+
+        private function handleUncaughtError(event:UncaughtErrorEvent):void {
+            // pass
+            if (event.error is Error) {
+                var error:Error = event.error as Error;
+                // do something with the error
+            } else if (event.error is ErrorEvent) {
+                var errorEvent:ErrorEvent = event.error as ErrorEvent;
+                // do something with the error
+            } else {
+                // a non-Error, non-ErrorEvent type was thrown and uncaught
+            }
+        }
+
         private function handleStackTrace(stackTrace:String):void {
-            sendPayload(buildPayload(stackTrace);
+            sendPayload(buildPayload(stackTrace));
         }
 
         private function sendPayload(payload:Object):void {
-            if (itemCount < MAX_ITEM_COUNT) {
-                var request = new URLRequest();
+            if (itemCount < this.maxItemCount) {
+                var request:URLRequest = new URLRequest();
                 request.method = URLRequestMethod.POST;
-                request.data = [JSON.encode(payload)];
-                request.url = API_ENDPONT_URL;         
+                //request.data = [JSON.encode(payload)];
+                // TODO(cory): fix me!
+                request.data = ['hai'];
+                request.url = this.submitUrl;         
 
                 loader.load(request);
                 itemCount++;
@@ -167,6 +211,13 @@ package com.ratchet.notifier {
         private function getQueryString():String {
             if (ExternalInterface.available) {
                 return ExternalInterface.call("window.location.search.substring", 1);
+            }
+            return null;
+        }
+
+        private function getBrowserUserAgent():String {
+            if (ExternalInterface.available) {
+                return ExternalInterface.call("navigtor.userAgent");
             }
             return null;
         }

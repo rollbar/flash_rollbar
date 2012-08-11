@@ -33,6 +33,7 @@ access_token
     Access token from your Ratchet.io project
 environment
     Environment name. Any string up to 255 chars is OK. For best results, use "production" for your production environment.
+
     **default:** ``production``
 userIp
     The IP address of the user playing the flash movie. You should rely on the IP your server recognizes for the user in case the user is behind a firewall or NAT gateway.
@@ -41,10 +42,7 @@ rootPath
 
     Otherwise, set this to the source path relative to your repository's root.
     e.g. if your source tree looks like this:
-        /myApp/
-              src/
-                  com/
-                      myApp
+        /myApp/src/com/myApp
         Set this to "src"
 codeBranch
     Name of the branch used to compile your Flash movie.

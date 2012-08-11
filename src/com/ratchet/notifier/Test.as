@@ -10,8 +10,8 @@ package com.ratchet.notifier {
 
     public class Test extends Sprite {
         // change to your own access token
-        public static const ACCESS_TOKEN:String = '943224be7ef5455aabd577208abc58ed';
-        public static const ENV:String = 'cory-dev';
+        public static const ACCESS_TOKEN:String = 'YOUR_ACCESS_TOKEN';
+        public static const ENV:String = 'production';
 
         protected var caughtButton:Sprite = new Sprite();
         protected var uncaughtButton:Sprite = new Sprite();

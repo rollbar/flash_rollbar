@@ -37,8 +37,7 @@ package com.ratchet.notifier {
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
     public final class RatchetNotifier extends Sprite {
 
-        //private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const API_ENDPONT_URL:String = "http://localhost:6943/api/1/item/";
+        private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
         private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: 1.0};
         private static const MAX_ITEM_COUNT:int = 5;
 

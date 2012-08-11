@@ -17,7 +17,22 @@ package com.ratchet.notifier {
 
         public function Test() {
 
-            notifier = new RatchetNotifier(ACCESS_TOKEN, ENV);
+            // Instantiate the notifier.
+            // Params:
+            //  access token
+            //  the environment your code is running from, e.g. "production"
+            //  the user's IP, (which you'll probably need to pass in via a
+            //      flashvar or use ExternalInterface to grab it from a 
+            //      javascript variable)
+            //  the path to the application code root, not including the final slash
+            //      Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
+            //      or -debug, you'll want to have this path reflect the root path from the
+            //      person who published the SWF/SWC file. Otherwise, you can set it to the
+            //      source directory of your project, e.g. "src".
+            notifier = new RatchetNotifier(ACCESS_TOKEN,
+                                           ENV,
+                                           "68.126.176.252",
+                                           "/Users/coryvirok/Development/flash_ratchet/src");
             addChild(notifier);
 
             button.graphics.clear();

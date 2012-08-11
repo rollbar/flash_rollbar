@@ -63,11 +63,11 @@ package com.ratchet.notifier {
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
                                         userIp:String=null,
-                                        serverData:Object=null,
-                                        submitUrl:String=null,
-                                        maxItemCount:int=5,
+                                        rootPath:String=null,
                                         codeBranch:String=null,
-                                        rootPath:String=null) {
+                                        serverData:Object=null,
+                                        maxItemCount:int=5,
+                                        submitUrl:String=null) {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};

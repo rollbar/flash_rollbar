@@ -1,12 +1,12 @@
 package com.ratchet.stacktrace {
-	public class StackTrace {
-		public var errorClassName:String = "";
-		public var message:String = "";
-		public var lines:Vector.<StackTraceLine>;
-	
-		public function StackTrace() {
-			lines = new Vector.<StackTraceLine>();
-		}
+    public class StackTrace {
+        public var errorClassName:String = "";
+        public var message:String = "";
+        public var lines:Vector.<StackTraceLine>;
+    
+        public function StackTrace() {
+            lines = new Vector.<StackTraceLine>();
+        }
 
         public function get frames():Array {
             var ret:Array = new Array();
@@ -18,5 +18,5 @@ package com.ratchet.stacktrace {
             }
             return ret;
         }
-	}
+    }
 }

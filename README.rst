@@ -43,7 +43,8 @@ rootPath
     Otherwise, set this to the source path relative to your repository's root.
     e.g. if your source tree looks like this:
         /myApp/src/com/myApp
-        Set this to "src"
+
+    Set this to "src"
 codeBranch
     Name of the branch used to compile your Flash movie.
 

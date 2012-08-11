@@ -1,18 +1,17 @@
 #! /bin/sh
 
-# Notifier SWF
-echo 'Building Notifier SWF'
-#mxmlc -compiler.source-path=./src -static-link-runtime-shared-libraries=true ./src/com/ratchet/notifier/RatchetNotifier.as -output build/swf/RatchetNotifer.swf
+target=$1
+if [ "$target" = "test" ]
+then
+    echo 'Building Test SWF into build/swf/test.swf'
+    mxmlc -compiler.source-path=./src -static-link-runtime-shared-libraries=true ./src/com/ratchet/notifier/Test.as -debug -output build/swf/test.swf
+elif [ "$target" = "swc" ]
+then
+    echo 'Building Ratchet SWC into build/swc/Ratchet.swc'
+    compc -include-sources ./src -output build/swc/Ratchet.swc
+else
+    echo 'Building Notifier SWF into build/swf/RatchetNotifier.swf'
+    mxmlc -compiler.source-path=./src -static-link-runtime-shared-libraries=true ./src/com/ratchet/notifier/RatchetNotifier.as -output build/swf/RatchetNotifer.swf
+fi
 
-# Ratchet SWC
-echo
-echo 'Building Ratchet SWC'
-#compc -include-sources ./src -output build/swc/Ratchet.swc
-
-# Test SWF
-echo
-echo 'Building Test SWF'
-mxmlc -compiler.source-path=./src -static-link-runtime-shared-libraries=true ./src/com/ratchet/notifier/Test.as -debug -output build/swf/test.swf
-
-echo
 echo 'Done'

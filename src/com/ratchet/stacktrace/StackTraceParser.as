@@ -17,8 +17,8 @@ package com.ratchet.stacktrace {
 
 		private static function parseErrorTitleAndMessage(input:String, stackTrace:StackTrace):void {
 			var index:int = input.indexOf(": ");
-			stackTrace.title = input.substr(0, index);
-			stackTrace.message = input.substr(index + 2);
+			stackTrace.errorClassName = input.substr(0, index);
+			stackTrace.message = trim(input.substr(index + 2));
 		}
 
 		private static function parseStackTraceLine(lineString:String):StackTraceLine {

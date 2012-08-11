@@ -57,22 +57,27 @@ package com.ratchet.notifier {
         private var maxItemCount:int;
         private var userIp:String;
         private var startTime:int;
+        private var branch:String;
+        private var rootPath:String;
 
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
                                         userIp:String=null,
                                         serverData:Object=null,
                                         submitUrl:String=null,
-                                        maxItemCount:int=5) {
+                                        maxItemCount:int=5,
+                                        codeBranch:String=null,
+                                        rootPath:String=null) {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};
             this.userIp = userIp;
             this.submitUrl = submitUrl || API_ENDPONT_URL;
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
+            this.branch = codeBranch || "master";
+            this.rootPath = rootPath;
 
             loader = new URLLoader();
-            //loader.dataFormat = URLLoaderDataFormat.VARIABLES;
             loader.dataFormat = URLLoaderDataFormat.TEXT;
  
             loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
@@ -82,7 +87,6 @@ package com.ratchet.notifier {
 
             addEventListener(Event.ADDED_TO_STAGE, function(event:Event):void {
                 swfUrl = unescape(loaderInfo.url);
-                trace('SWF URL: ' + swfUrl);
                 embeddedUrl = getEmbeddedUrl();
                 queryString = getQueryString();
 
@@ -113,7 +117,7 @@ package com.ratchet.notifier {
                         trace: {
                             frames: stackTraceObj.frames,
                             exception: {
-                                'class': 'FOO', //stackTraceObj.className,
+                                'class': stackTraceObj.errorClassName,
                                 message: stackTraceObj.message
                             }
                         }
@@ -127,30 +131,34 @@ package com.ratchet.notifier {
                         user_ip: userIp
                     },
                     client: {
-                        browser: getBrowserUserAgent(),
-                        runtime: getTimer(),
-                        swf_url: swfUrl,
-                        flash_player: {
-                            freeMemory: System.freeMemory,
-                            privateMemory: System.privateMemory,
-                            totalMemory: System.totalMemory,
-                            capabilities: {
-                                avHardwareDisable: Capabilities.avHardwareDisable,
-                                cpuArchitecture: Capabilities.cpuArchitecture,
-                                externalInterfaceAvailable: ExternalInterface.available,
-                                hasAccessibility: Capabilities.hasAccessibility,
-                                hasAudio: Capabilities.hasAudio,
-                                isDebugger: Capabilities.isDebugger,
-                                language: Capabilities.language,
-                                localFileReadDisable: Capabilities.localFileReadDisable,
-                                manufacturer: Capabilities.manufacturer,
-                                os: Capabilities.os,
-                                pixelAspectRatio: Capabilities.pixelAspectRatio,
-                                playerType: Capabilities.playerType,
-                                screenDPI: Capabilities.screenDPI,
-                                screenResolutionX: Capabilities.screenResolutionX,
-                                screenResolutionY: Capabilities.screenResolutionY,
-                                version: Capabilities.version
+                        runtime_ms: getTimer(),
+                        root: rootPath,
+                        branch: branch,
+                        flash: {
+                            browser: getBrowserUserAgent(),
+                            swf_url: swfUrl,
+                            player: {
+                                freeMemory: System.freeMemory,
+                                privateMemory: System.privateMemory,
+                                totalMemory: System.totalMemory,
+                                capabilities: {
+                                    avHardwareDisable: Capabilities.avHardwareDisable,
+                                    cpuArchitecture: Capabilities.cpuArchitecture,
+                                    externalInterfaceAvailable: ExternalInterface.available,
+                                    hasAccessibility: Capabilities.hasAccessibility,
+                                    hasAudio: Capabilities.hasAudio,
+                                    isDebugger: Capabilities.isDebugger,
+                                    language: Capabilities.language,
+                                    localFileReadDisable: Capabilities.localFileReadDisable,
+                                    manufacturer: Capabilities.manufacturer,
+                                    os: Capabilities.os,
+                                    pixelAspectRatio: Capabilities.pixelAspectRatio,
+                                    playerType: Capabilities.playerType,
+                                    screenDPI: Capabilities.screenDPI,
+                                    screenResolutionX: Capabilities.screenResolutionX,
+                                    screenResolutionY: Capabilities.screenResolutionY,
+                                    version: Capabilities.version
+                                }
                             }
                         }
                     },
@@ -193,12 +201,8 @@ package com.ratchet.notifier {
         private function sendPayload(payload:Object):void {
             if (itemCount < this.maxItemCount) {
                 var request:URLRequest = new URLRequest();
-                var vars:URLVariables = new URLVariables();
-
-                vars.payload = JSONEncoder.encode(payload);
-
                 request.method = URLRequestMethod.POST;
-                request.data = JSONEncoder.encode(payload);//vars;
+                request.data = JSONEncoder.encode(payload);
                 request.url = this.submitUrl;         
 
                 loader.load(request);
@@ -214,7 +218,7 @@ package com.ratchet.notifier {
 
         private function getEmbeddedUrl():String {
             if (ExternalInterface.available) {
-                return ExternalInterface.call("window.location.href");
+                return ExternalInterface.call("window.location.href.toString");
             }
             return null;
         }
@@ -228,7 +232,7 @@ package com.ratchet.notifier {
 
         private function getBrowserUserAgent():String {
             if (ExternalInterface.available) {
-                return ExternalInterface.call("navigtor.userAgent");
+                return ExternalInterface.call("window.navigator.userAgent.toString");
             }
             return null;
         }

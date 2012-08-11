@@ -1,6 +1,8 @@
 package com.ratchet.notifier {
     import flash.display.Sprite;
     import flash.text.TextField;
+    import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
     import flash.events.*;
 
     import com.ratchet.notifier.RatchetNotifier;
@@ -18,27 +20,31 @@ package com.ratchet.notifier {
             notifier = new RatchetNotifier(ACCESS_TOKEN, ENV);
             addChild(notifier);
 
-            var helloTxt:TextField = new TextField();
-            helloTxt.text = 'Hello World';
-            addChild(helloTxt);
-
-            var errTxt:TextField = new TextField();
             button.graphics.clear();
             button.graphics.beginFill(0xD4D4D4);
-            button.graphics.drawRoundRect(0, 0, 80, 25, 10, 10);
+            button.graphics.drawRoundRect(0, 100, 200, 50, 20, 20);
             button.graphics.endFill();
+            addChild(button);
+
+            var format:TextFormat = new TextFormat();
+            format.size = 20;
+
+            var errTxt:TextField = new TextField();
+            errTxt.defaultTextFormat = format;
             errTxt.text = 'Cause Error';
             errTxt.x = 10;
-            errTxt.y = 5;
+            errTxt.y = 105;
             errTxt.selectable = false;
             button.addChild(errTxt);
-
-            addChild(button);
 
             button.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         }
 
         private function mouseDownHandler(event:MouseEvent):void {
+            uselessIndirection();
+        }
+
+        private function uselessIndirection():void {
             try {
                 throw new Error('dummy');
             } catch (e:Error) {

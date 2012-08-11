@@ -1,6 +1,6 @@
 package com.ratchet.notifier {
 
-    import flash.display.DisplayObject;
+    import flash.display.Sprite;
     import flash.display.LoaderInfo;
 
     import flash.errors.IllegalOperationError;
@@ -20,19 +20,25 @@ package com.ratchet.notifier {
     import flash.net.URLLoaderDataFormat;
     import flash.net.URLRequest;
     import flash.net.URLRequestMethod;
+    import flash.net.URLVariables;
 
     import flash.system.Capabilities;
     import flash.system.System;
 
     import flash.utils.getTimer;
 
+    import com.ratchet.json.JSONEncoder;
+    import com.ratchet.stacktrace.StackTrace;
+    import com.ratchet.stacktrace.StackTraceParser;
+
     [Event(name="complete", type="flash.events.Event")]
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
     [Event(name="ioError", type="flash.events.IOErrorEvent")]
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
-    public class RatchetNotifier extends DisplayObject {
+    public class RatchetNotifier extends Sprite {
 
-        private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
+        //private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
+        private static const API_ENDPONT_URL:String = "http://localhost:6943/api/1/item/";
         private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: 1.0};
         private static const MAX_ITEM_COUNT:int = 5;
 
@@ -64,13 +70,9 @@ package com.ratchet.notifier {
             this.userIp = userIp;
             this.submitUrl = submitUrl || API_ENDPONT_URL;
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
-            this.startTime = getTimer();
-            
-            swfUrl = unescape(LoaderInfo(this.root.loaderInfo).url);
-            embeddedUrl = getEmbeddedUrl();
-            queryString = getQueryString();
 
             loader = new URLLoader();
+            //loader.dataFormat = URLLoaderDataFormat.VARIABLES;
             loader.dataFormat = URLLoaderDataFormat.TEXT;
  
             loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
@@ -78,11 +80,18 @@ package com.ratchet.notifier {
             loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
             loader.addEventListener(Event.COMPLETE, handleUrlLoaderEvent);
 
-            // Register for uncaught errors if >= 10.1.
-            if(loaderInfo.hasOwnProperty('uncaughtErrorEvents')) {
-                var uncaughtErrorEvents:IEventDispatcher = IEventDispatcher(loaderInfo["uncaughtErrorEvents"]);
-                uncaughtErrorEvents.addEventListener("uncaughtError", handleUncaughtError);
-            }
+            addEventListener(Event.ADDED_TO_STAGE, function(event:Event):void {
+                swfUrl = unescape(loaderInfo.url);
+                trace('SWF URL: ' + swfUrl);
+                embeddedUrl = getEmbeddedUrl();
+                queryString = getQueryString();
+
+                // Register for uncaught errors if >= 10.1.
+                if(loaderInfo.hasOwnProperty('uncaughtErrorEvents')) {
+                    var uncaughtErrorEvents:IEventDispatcher = IEventDispatcher(loaderInfo["uncaughtErrorEvents"]);
+                    uncaughtErrorEvents.addEventListener("uncaughtError", handleUncaughtError);
+                }
+            });
         }
 
         public function handleError(err:Error):void {
@@ -94,59 +103,59 @@ package com.ratchet.notifier {
         }
 
         public function buildPayload(stackTrace:String):Object {
-            var stackTraceObj:Object = parseDataFromStackTrace(stackTrace);
-            var now:Number = getTimer();
+            var stackTraceObj:StackTrace = StackTraceParser.parseStackTrace(stackTrace);
+
             var payload:Object = {
-                accessToken: accessToken,
-                timestamp: int(now),
-                platform: "flash",
-                language: "as3",
-                request: {
-                    url: embeddedUrl,
-                    query_string: queryString,
-                    user_ip: userIp
-                },
-                client: {
-                    browser: getBrowserUserAgent(),
-                    runtime: int(now - startTime),
-                    swf_url: swfUrl,
-                    flash_player: {
-                        freeMemory: System.freeMemory,
-                        privateMemory: System.privateMemory,
-                        totalMemory: System.totalMemory,
-                        capabilities: {
-                            avHardwareDisable: Capabilities.avHardwareDisable,
-                            cpuArchitecture: Capabilities.cpuArchitecture,
-                            externalInterfaceAvailable: ExternalInterface.available,
-                            hasAccessibility: Capabilities.hasAccessibility,
-                            hasAudio: Capabilities.hasAudio,
-                            isDebugger: Capabilities.isDebugger,
-                            language: Capabilities.language,
-                            localFileReadDisable: Capabilities.localFileReadDisable,
-                            manufacturer: Capabilities.manufacturer,
-                            os: Capabilities.os,
-                            pixelAspectRatio: Capabilities.pixelAspectRatio,
-                            playerType: Capabilities.playerType,
-                            screenDPI: Capabilities.screenDPI,
-                            screenResolutionX: Capabilities.screenResolutionX,
-                            screenResolutionY: Capabilities.screenResolutionY,
-                            version: Capabilities.version
-                        }
-                    }
-                },
-                server: serverData,
-                notifier: NOTIFIER_DATA,
+                access_token: accessToken,
                 data: {
                     environment: environment,
                     body: {
                         trace: {
                             frames: stackTraceObj.frames,
                             exception: {
-                                'class': stackTraceObj.className,
+                                'class': 'FOO', //stackTraceObj.className,
                                 message: stackTraceObj.message
                             }
                         }
-                    }
+                    },
+                    timestamp: int((new Date()).getTime() / 1000),
+                    platform: "flash",
+                    language: "as3",
+                    request: {
+                        url: embeddedUrl,
+                        query_string: queryString,
+                        user_ip: userIp
+                    },
+                    client: {
+                        browser: getBrowserUserAgent(),
+                        runtime: getTimer(),
+                        swf_url: swfUrl,
+                        flash_player: {
+                            freeMemory: System.freeMemory,
+                            privateMemory: System.privateMemory,
+                            totalMemory: System.totalMemory,
+                            capabilities: {
+                                avHardwareDisable: Capabilities.avHardwareDisable,
+                                cpuArchitecture: Capabilities.cpuArchitecture,
+                                externalInterfaceAvailable: ExternalInterface.available,
+                                hasAccessibility: Capabilities.hasAccessibility,
+                                hasAudio: Capabilities.hasAudio,
+                                isDebugger: Capabilities.isDebugger,
+                                language: Capabilities.language,
+                                localFileReadDisable: Capabilities.localFileReadDisable,
+                                manufacturer: Capabilities.manufacturer,
+                                os: Capabilities.os,
+                                pixelAspectRatio: Capabilities.pixelAspectRatio,
+                                playerType: Capabilities.playerType,
+                                screenDPI: Capabilities.screenDPI,
+                                screenResolutionX: Capabilities.screenResolutionX,
+                                screenResolutionY: Capabilities.screenResolutionY,
+                                version: Capabilities.version
+                            }
+                        }
+                    },
+                    server: serverData,
+                    notifier: NOTIFIER_DATA
                 }
             };
             return payload;
@@ -184,10 +193,12 @@ package com.ratchet.notifier {
         private function sendPayload(payload:Object):void {
             if (itemCount < this.maxItemCount) {
                 var request:URLRequest = new URLRequest();
+                var vars:URLVariables = new URLVariables();
+
+                vars.payload = JSONEncoder.encode(payload);
+
                 request.method = URLRequestMethod.POST;
-                //request.data = [JSON.encode(payload)];
-                // TODO(cory): fix me!
-                request.data = ['hai'];
+                request.data = JSONEncoder.encode(payload);//vars;
                 request.url = this.submitUrl;         
 
                 loader.load(request);
@@ -220,96 +231,6 @@ package com.ratchet.notifier {
                 return ExternalInterface.call("navigtor.userAgent");
             }
             return null;
-        }
-        
-        /*
-         * from http://www.actionscript-flash-guru.com/blog/18-parse-file-package-function-name-from-stack-trace-in-actionscript-as3
-         */
-        protected function parseDataFromStackTrace(stackTrace:String):Object {
-            // extract function name from the stack trace
-            var parsedDataObj:Object = {fileName: "", packageName: "", className: "", functionName: ""};
-            var nameResults:Array;
-
-            // extract the package from the class name
-            var matchExpression:RegExp;
-            var isFileNameFound:Boolean;
-
-            // if running in debugger you are going to remove that data
-            var removeDebuggerData:RegExp = /\[.*?\]/msgi;
-            stackTrace = stackTrace.replace(removeDebuggerData, "");
-
-            // remove the Error message at the top of the stack trace
-            var removeTop:RegExp = /^Error.*?at\s/msi;
-            stackTrace = stackTrace.replace(removeTop, "");
-            stackTrace = "at " + stackTrace;
-
-            // get file name
-            matchExpression = /(at\s)*(.*?)_fla::/i;
-            nameResults = stackTrace.match(matchExpression);
-            if (nameResults != null && nameResults.length > 2) {
-                parsedDataObj.fileName = nameResults[2];
-                parsedDataObj.fileName = parsedDataObj.fileName.replace(/^\s*at\s/i, "") + ".fla";
-                isFileNameFound = true;
-            }
-
-            // match timeline data
-            matchExpression = /^at\s(.*?)::(.*?)\/(.*?)::(.*?)\(\)/i;
-            nameResults = stackTrace.match(matchExpression);
-
-            if (nameResults != null && nameResults.length > 4) {
-                if (!isFileNameFound) {
-                    parsedDataObj.fileName = String(nameResults[1]).replace(/_fla$/i, ".fla");
-                    parsedDataObj.fileName = parsedDataObj.fileName.replace(/^at\s/i, "");
-                }
-                parsedDataObj.packageName = String(nameResults[1]);
-                parsedDataObj.className = String(nameResults[2]);
-                parsedDataObj.functionName = String(nameResults[4]);
-            } else {
-                // match function in a class of format com.package::SomeClass/somefunction()
-                matchExpression = /^at\s(.*?)::(.*?)\/(.*?)\(\)/i;
-                nameResults = stackTrace.match(matchExpression);
-                if (nameResults != null && nameResults.length > 3) {
-                    if (!isFileNameFound) {
-                        parsedDataObj.fileName = String(nameResults[2]) + ".as";
-                    }
-                    parsedDataObj.packageName = nameResults[1];
-                    parsedDataObj.className = nameResults[2];
-                    parsedDataObj.functionName = String(nameResults[3]);
-                } else {
-                    // match a contructor with $iinit
-                    matchExpression = /^at\s(.*?)::(.*?)\$(.*?)\(\)/i;
-                    nameResults = stackTrace.match(matchExpression);
-                    if (nameResults != null && nameResults.length > 3) {
-                        if (!isFileNameFound) {
-                            parsedDataObj.fileName = String(nameResults[2]) + ".as";
-                        }
-                        parsedDataObj.packageName = String(nameResults[1]);
-                        parsedDataObj.className = String(nameResults[2]);
-                        parsedDataObj.functionName = String(nameResults[2]);
-                    } else {
-                        // match a contructor that looks like this com.package::SomeClassConstructor()
-                        matchExpression = /^at\s(.*?)::(.*?)\(\)/i;
-                        nameResults = stackTrace.match(matchExpression);
-                        if (nameResults != null && nameResults.length > 2) {
-                            if (!isFileNameFound) {
-                                parsedDataObj.fileName = String(nameResults[2]) + ".as";
-                            }
-                            parsedDataObj.packageName = String(nameResults[1]);
-                            parsedDataObj.className = String(nameResults[2]);
-                            parsedDataObj.functionName = String(nameResults[2]);
-                        } else {
-                            // can't find a match - this is a catch all, you never know, 
-                            if (!isFileNameFound) {
-                                parsedDataObj.fileName = "NO_DATA";
-                            }
-                            parsedDataObj.packageName = "NO_DATA";
-                            parsedDataObj.className = "NO_DATA";
-                            parsedDataObj.functionName = "NO_DATA";
-                        }
-                    }
-                }
-            }
-            return parsedDataObj;
         }
     }
 }

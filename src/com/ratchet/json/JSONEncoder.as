@@ -40,6 +40,10 @@ package com.ratchet.json {
         
         /** The string that is going to represent the object we're encoding */
         private var jsonString:String;
+
+        public static function encode(o:Object):String {
+            return new JSONEncoder(o).getString();
+        }
         
         /**
          * Creates a new JSONEncoder.

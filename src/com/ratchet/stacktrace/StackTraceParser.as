@@ -2,10 +2,10 @@
 package com.ratchet.stacktrace {
     public class StackTraceParser {
         public static function parseStackTrace(stackTraceString:String):StackTrace {
-            var data:Array = stackTraceString.split("    at ");
+            var data:Array = stackTraceString.split("\tat ");
             var stackTrace:StackTrace = new StackTrace();
 
-            parseErrorTitleAndMessage(data.shift(), stackTrace);
+            parseErrorClassAndMessage(data.shift(), stackTrace);
             for (var i:int = 0; i < data.length; i++) {
                 stackTrace.lines.push(parseStackTraceLine(data[i]));
             }
@@ -13,9 +13,9 @@ package com.ratchet.stacktrace {
             return stackTrace;
         }
 
-        private static function parseErrorTitleAndMessage(input:String, stackTrace:StackTrace):void {
+        private static function parseErrorClassAndMessage(input:String, stackTrace:StackTrace):void {
             var index:int = input.indexOf(": ");
-            stackTrace.errorClassName = input.substr(0, index);
+            stackTrace.errorClassName = trim(input.substr(0, index));
             stackTrace.message = trim(input.substr(index + 2));
         }
 

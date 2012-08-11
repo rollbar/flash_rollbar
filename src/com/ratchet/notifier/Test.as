@@ -1,6 +1,7 @@
 package com.ratchet.notifier {
     import flash.display.Sprite;
     import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     import flash.events.*;
@@ -12,7 +13,8 @@ package com.ratchet.notifier {
         public static const ACCESS_TOKEN:String = '943224be7ef5455aabd577208abc58ed';
         public static const ENV:String = 'cory-dev';
 
-        protected var button:Sprite = new Sprite();
+        protected var caughtButton:Sprite = new Sprite();
+        protected var uncaughtButton:Sprite = new Sprite();
         protected var notifier:RatchetNotifier;
 
         public function Test() {
@@ -35,36 +37,63 @@ package com.ratchet.notifier {
                                            "/Users/coryvirok/Development/flash_ratchet/src");
             addChild(notifier);
 
-            button.graphics.clear();
-            button.graphics.beginFill(0xD4D4D4);
-            button.graphics.drawRoundRect(0, 100, 200, 50, 20, 20);
-            button.graphics.endFill();
-            addChild(button);
+            caughtButton.graphics.clear();
+            caughtButton.graphics.beginFill(0xD4D4D4);
+            caughtButton.graphics.drawRoundRect(0, 100, 200, 50, 20, 20);
+            caughtButton.graphics.endFill();
+            addChild(caughtButton);
+
+            uncaughtButton.graphics.clear();
+            uncaughtButton.graphics.beginFill(0xD4D4D4);
+            uncaughtButton.graphics.drawRoundRect(0, 200, 200, 50, 20, 20);
+            uncaughtButton.graphics.endFill();
+            addChild(uncaughtButton);
 
             var format:TextFormat = new TextFormat();
             format.size = 20;
 
-            var errTxt:TextField = new TextField();
-            errTxt.defaultTextFormat = format;
-            errTxt.text = 'Cause Error';
-            errTxt.x = 10;
-            errTxt.y = 105;
-            errTxt.selectable = false;
-            button.addChild(errTxt);
+            var format2:TextFormat = new TextFormat();
+            format2.size = 20;
 
-            button.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+            var caughtErrText:TextField = new TextField();
+            caughtErrText.defaultTextFormat = format;
+            caughtErrText.autoSize = TextFieldAutoSize.RIGHT;
+            caughtErrText.text = 'Cause Error';
+            caughtErrText.x = 10;
+            caughtErrText.y = 105;
+            caughtErrText.selectable = false;
+            caughtButton.addChild(caughtErrText);
+
+            var uncaughtErrText:TextField = new TextField();
+            uncaughtErrText.defaultTextFormat = format2;
+            uncaughtErrText.autoSize = TextFieldAutoSize.RIGHT;
+            uncaughtErrText.text = 'Cause Uncaught Error';
+            uncaughtErrText.x = 10;
+            uncaughtErrText.y = 205;
+            uncaughtErrText.selectable = false;
+            uncaughtButton.addChild(uncaughtErrText);
+
+            caughtButton.addEventListener(MouseEvent.MOUSE_DOWN, caughtMouseDownHandler);
+            uncaughtButton.addEventListener(MouseEvent.MOUSE_DOWN, uncaughtMouseDownHandler);
         }
 
-        private function mouseDownHandler(event:MouseEvent):void {
-            uselessIndirection();
-        }
-
-        private function uselessIndirection():void {
+        private function caughtMouseDownHandler(event:MouseEvent):void {
             try {
-                throw new Error('dummy');
+                trace('causing error within try/catch');
+                causeError();
             } catch (e:Error) {
+                trace('caught error within try/catch');
                 notifier.handleError(e);
             }
+        }
+
+        private function uncaughtMouseDownHandler(event:MouseEvent):void {
+            trace('caught uncaught error');
+            causeError();
+        }
+
+        private function causeError():void {
+            throw new Error('dummy');
         }
     }
 }

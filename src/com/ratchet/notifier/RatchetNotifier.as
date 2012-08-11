@@ -35,7 +35,7 @@ package com.ratchet.notifier {
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
     [Event(name="ioError", type="flash.events.IOErrorEvent")]
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
-    public class RatchetNotifier extends Sprite {
+    public final class RatchetNotifier extends Sprite {
 
         //private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
         private static const API_ENDPONT_URL:String = "http://localhost:6943/api/1/item/";
@@ -103,10 +103,80 @@ package com.ratchet.notifier {
         }
 
         public function handleErrorEvent(event:ErrorEvent):void {
-            handleStackTrace(buildErrorEventStackTrace(event));
+            var newError:Error = new Error("An ErrorEvent was thrown and not caught: " + event.toString());
+            handleError(newError);
         }
 
-        public function buildPayload(stackTrace:String):Object {
+        public function handleOtherEvent(event:*):void {
+            var newError:Error = new Error("A non-Error or ErrorEvent was thrown and not caught: " + event);
+            handleError(newError);
+        }
+
+        public function dispose():void {
+            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
+            loader.removeEventListener(IOErrorEvent.IO_ERROR, handleUrlLoaderEvent);
+            loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
+            loader.removeEventListener(Event.COMPLETE, handleUrlLoaderEvent);
+            loader = null;
+        }
+
+        private function handleUncaughtError(event:UncaughtErrorEvent):void {
+            if (event.error is Error) {
+                var error:Error = event.error as Error;
+                handleError(error);
+            } else if (event.error is ErrorEvent) {
+                var errorEvent:ErrorEvent = event.error as ErrorEvent;
+                handleErrorEvent(errorEvent);
+            } else {
+                // Inform the user that a non-error event was thrown and not caught.
+                handleOtherEvent(event);
+            }
+        }
+
+        private function handleStackTrace(stackTrace:String):void {
+            sendPayload(buildPayload(stackTrace));
+        }
+
+        private function sendPayload(payload:Object):void {
+            if (itemCount < this.maxItemCount) {
+                var request:URLRequest = new URLRequest();
+                request.method = URLRequestMethod.POST;
+                request.data = JSONEncoder.encode(payload);
+                request.url = this.submitUrl;         
+
+                loader.load(request);
+                itemCount++;
+            } else {
+                // too many handled items
+            }
+        }
+
+        private function handleUrlLoaderEvent(event:Event):void {
+            dispatchEvent(event); 
+        }
+
+        private function getEmbeddedUrl():String {
+            if (ExternalInterface.available) {
+                return ExternalInterface.call("window.location.href.toString");
+            }
+            return null;
+        }
+
+        private function getQueryString():String {
+            if (ExternalInterface.available) {
+                return ExternalInterface.call("window.location.search.substring", 1);
+            }
+            return null;
+        }
+
+        private function getBrowserUserAgent():String {
+            if (ExternalInterface.available) {
+                return ExternalInterface.call("window.navigator.userAgent.toString");
+            }
+            return null;
+        }
+
+        private function buildPayload(stackTrace:String):Object {
             var stackTraceObj:StackTrace = StackTraceParser.parseStackTrace(stackTrace);
 
             var payload:Object = {
@@ -169,72 +239,5 @@ package com.ratchet.notifier {
             return payload;
         }
         
-        public function dispose():void {
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, handleUrlLoaderEvent);
-            loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
-            loader.removeEventListener(Event.COMPLETE, handleUrlLoaderEvent);
-            loader = null;
-        }
-
-        private function buildErrorEventStackTrace(event:ErrorEvent):String {
-            return 'error event stack trace. Implement me';
-        }
-
-        private function handleUncaughtError(event:UncaughtErrorEvent):void {
-            // pass
-            if (event.error is Error) {
-                var error:Error = event.error as Error;
-                // do something with the error
-            } else if (event.error is ErrorEvent) {
-                var errorEvent:ErrorEvent = event.error as ErrorEvent;
-                // do something with the error
-            } else {
-                // a non-Error, non-ErrorEvent type was thrown and uncaught
-            }
-        }
-
-        private function handleStackTrace(stackTrace:String):void {
-            sendPayload(buildPayload(stackTrace));
-        }
-
-        private function sendPayload(payload:Object):void {
-            if (itemCount < this.maxItemCount) {
-                var request:URLRequest = new URLRequest();
-                request.method = URLRequestMethod.POST;
-                request.data = JSONEncoder.encode(payload);
-                request.url = this.submitUrl;         
-
-                loader.load(request);
-                itemCount++;
-            } else {
-                // too many handled items
-            }
-        }
-
-        private function handleUrlLoaderEvent(event:Event):void {
-            dispatchEvent(event); 
-        }
-
-        private function getEmbeddedUrl():String {
-            if (ExternalInterface.available) {
-                return ExternalInterface.call("window.location.href.toString");
-            }
-            return null;
-        }
-
-        private function getQueryString():String {
-            if (ExternalInterface.available) {
-                return ExternalInterface.call("window.location.search.substring", 1);
-            }
-            return null;
-        }
-
-        private function getBrowserUserAgent():String {
-            if (ExternalInterface.available) {
-                return ExternalInterface.call("window.navigator.userAgent.toString");
-            }
-            return null;
-        }
     }
 }

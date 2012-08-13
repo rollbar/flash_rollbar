@@ -62,7 +62,7 @@ submitUrl
 Contributing
 ------------
 
-Contributions are welcome. The project is hosted on github at http://github.com/coryvirok/flash_ratchet
+Contributions are welcome. The project is hosted on github at http://github.com/ratchetio/flash_ratchet
 
 
 Additional Help
@@ -72,4 +72,4 @@ If you have any questions, feedback, etc., drop me a line at cory@ratchet.io
 
 .. _Ratchet.io: http://ratchet.io/
 .. _error reporting: http://ratchet.io/
-.. _flash_ratchet: http://github.com/coryvirok/flash_ratchet
+.. _flash_ratchet: http://github.com/ratchetio/flash_ratchet

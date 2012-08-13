@@ -1,5 +1,5 @@
 // Adapted from https://github.com/StephanPartzsch/as3-airbrake-notifier
-package com.ratchet.stacktrace {
+package io.ratchet.stacktrace {
     public class StackTraceParser {
         public static function parseStackTrace(stackTraceString:String):StackTrace {
             var data:Array = stackTraceString.split("\tat ");

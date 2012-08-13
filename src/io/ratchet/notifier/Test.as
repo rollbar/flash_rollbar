@@ -1,4 +1,4 @@
-package com.ratchet.notifier {
+package io.ratchet.notifier {
     import flash.display.Sprite;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
@@ -6,7 +6,7 @@ package com.ratchet.notifier {
     import flash.text.TextFormatAlign;
     import flash.events.*;
 
-    import com.ratchet.notifier.RatchetNotifier;
+    import io.ratchet.notifier.RatchetNotifier;
 
     public class Test extends Sprite {
         // change to your own access token
@@ -29,7 +29,7 @@ package com.ratchet.notifier {
             //  the path to the application code root, not including the final slash
             //      Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
             //      or -debug, you'll want to have this path reflect the root path from the
-            //      person who published the SWF/SWC file. Otherwise, you can set it to the
+            //      user who published the SWF/SWC file. Otherwise, you can set it to the
             //      source directory of your project, e.g. "src".
             notifier = new RatchetNotifier(ACCESS_TOKEN,
                                            ENV,

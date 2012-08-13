@@ -1,4 +1,4 @@
-package com.ratchet.notifier {
+package io.ratchet.notifier {
 
     import flash.display.Sprite;
     import flash.display.LoaderInfo;
@@ -27,9 +27,9 @@ package com.ratchet.notifier {
 
     import flash.utils.getTimer;
 
-    import com.ratchet.json.JSONEncoder;
-    import com.ratchet.stacktrace.StackTrace;
-    import com.ratchet.stacktrace.StackTraceParser;
+    import io.ratchet.json.JSONEncoder;
+    import io.ratchet.stacktrace.StackTrace;
+    import io.ratchet.stacktrace.StackTraceParser;
 
     [Event(name="complete", type="flash.events.Event")]
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]

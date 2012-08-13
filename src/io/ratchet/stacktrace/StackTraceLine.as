@@ -1,4 +1,4 @@
-package com.ratchet.stacktrace {
+package io.ratchet.stacktrace {
     public class StackTraceLine {
         public var file:String = "";
         public var number:String = "";

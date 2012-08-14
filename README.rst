@@ -8,7 +8,8 @@ Requirements
 ------------
 flash_ratchet requires:
 
-- Flash Player 9+
+- Flash Player 10.1+
+  - May work on 9 but it's untested
 - mxmlc/compc if you plan on building from source
 - a Ratchet.io `error reporting`_ account
 
@@ -23,13 +24,15 @@ Source
 
 Configuration
 -------------
-At the topmost level of your display list, instantiate and the notifier to your stage.
+At the topmost level of your display list, instantiate the Ratchet singleton.
     
-    notifier = new RatchetNotifier(ACCESS_TOKEN, environment, userIp);
+    ratchet = Ratchet.init(stage, accessToken, environment, userIp);
 
 Here's the full list of constructor parameters:
 
-access_token
+stage
+    The parent display object container. The notifier will report all errors for SWFs that are loaded with stage.loaderInfo.
+accessToken
     Access token from your Ratchet.io project
 environment
     Environment name. Any string up to 255 chars is OK. For best results, use "production" for your production environment.

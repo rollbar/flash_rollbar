@@ -6,36 +6,36 @@ package io.ratchet.notifier {
     import flash.text.TextFormatAlign;
     import flash.events.*;
 
-    import io.ratchet.notifier.RatchetNotifier;
+    import io.ratchet.notifier.Ratchet;
 
     public class Test extends Sprite {
         // change to your own access token
-        public static const ACCESS_TOKEN:String = 'YOUR_ACCESS_TOKEN';
+        public static const ACCESS_TOKEN:String = 'ACCESS_TOKEN';
         public static const ENV:String = 'production';
 
         protected var caughtButton:Sprite = new Sprite();
         protected var uncaughtButton:Sprite = new Sprite();
-        protected var notifier:RatchetNotifier;
 
         public function Test() {
+            trace("yo dawg");
 
-            // Instantiate the notifier.
-            // Params:
-            //  access token
-            //  the environment your code is running from, e.g. "production"
-            //  the user's IP, (which you'll probably need to pass in via a
-            //      flashvar or use ExternalInterface to grab it from a 
-            //      javascript variable)
-            //  the path to the application code root, not including the final slash
-            //      Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
-            //      or -debug, you'll want to have this path reflect the root path from the
-            //      user who published the SWF/SWC file. Otherwise, you can set it to the
-            //      source directory of your project, e.g. "src".
-            notifier = new RatchetNotifier(ACCESS_TOKEN,
-                                           ENV,
-                                           "68.126.176.252",
-                                           "/Users/coryvirok/Development/flash_ratchet/src");
-            addChild(notifier);
+            // Initialize the Ratchet notifier.
+            Ratchet.init(stage,  // stage must be passed as first param
+                ACCESS_TOKEN,  // your ratchet.io project access token
+                ENV,  // environment name - i.e. "production" or "development"
+                "68.126.176.252",  // user's ip address. pass in via a flashvar.
+                "/Users/coryvirok/Development/flash_ratchet/src"  // the path to the application code root, 
+                    // not including the final slash.
+                    // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
+                    // or -debug, you'll want to have this path reflect the root path from the
+                    // user who published the SWF/SWC file. Otherwise, you can set it to the
+                    // source directory of your project, e.g. "src".
+            );
+
+            mouseEnabled = true;
+            mouseChildren = true;
+
+            // Draw some buttons.
 
             caughtButton.graphics.clear();
             caughtButton.graphics.beginFill(0xD4D4D4);
@@ -83,7 +83,7 @@ package io.ratchet.notifier {
                 causeError();
             } catch (e:Error) {
                 trace('caught error within try/catch');
-                notifier.handleError(e);
+                Ratchet.handleError(e);
             }
         }
 

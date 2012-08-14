@@ -38,7 +38,7 @@ package io.ratchet.notifier {
     public final class RatchetNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: 1.0};
+        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.1"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RatchetNotifier = null;
@@ -84,16 +84,21 @@ package io.ratchet.notifier {
             loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
             loader.addEventListener(Event.COMPLETE, handleUrlLoaderEvent);
 
+            trace("Adding ADDED_TO_STAGE listener");
             addEventListener(Event.ADDED_TO_STAGE, function(event:Event):void {
+                trace("ADDED_TO_STAGE called");
                 swfUrl = unescape(loaderInfo.url);
                 embeddedUrl = getEmbeddedUrl();
                 queryString = getQueryString();
 
                 // Register for uncaught errors if >= 10.1.
-                if(loaderInfo.hasOwnProperty('uncaughtErrorEvents')) {
-                    var uncaughtErrorEvents:IEventDispatcher = IEventDispatcher(loaderInfo["uncaughtErrorEvents"]);
-                    uncaughtErrorEvents.addEventListener("uncaughtError", handleUncaughtError);
+                if (loaderInfo.hasOwnProperty('uncaughtErrorEvents')) {
+                    trace("have the property");
+                    var uncaughtErrorEvents:IEventDispatcher = IEventDispatcher(loaderInfo.uncaughtErrorEvents);
+                    uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, handleUncaughtError);
+                    throw new Error("yo dawg");
                 }
+                trace("finished in ADDED_TO_STAGE");
             });
         }
 
@@ -120,6 +125,7 @@ package io.ratchet.notifier {
         }
 
         private function handleUncaughtError(event:UncaughtErrorEvent):void {
+            trace("in handleUncaughtError");
             if (event.error is Error) {
                 var error:Error = event.error as Error;
                 handleError(error);
@@ -132,11 +138,12 @@ package io.ratchet.notifier {
             }
         }
 
-        private function handleStackTrace(stackTrace:String):void {
+        public function handleStackTrace(stackTrace:String):void {
             sendPayload(buildPayload(stackTrace));
         }
 
         private function sendPayload(payload:Object):void {
+            trace("sending paylaod...");
             if (itemCount < this.maxItemCount) {
                 var request:URLRequest = new URLRequest();
                 request.method = URLRequestMethod.POST;
@@ -144,13 +151,17 @@ package io.ratchet.notifier {
                 request.url = this.submitUrl;         
 
                 loader.load(request);
+                trace("sent " + this.submitUrl);
                 itemCount++;
             } else {
+                trace("too many items, ignoring");
                 // too many handled items
             }
         }
 
         private function handleUrlLoaderEvent(event:Event):void {
+            trace("in handleUrlLoaderEvent");
+            trace(event);
             dispatchEvent(event); 
         }
 

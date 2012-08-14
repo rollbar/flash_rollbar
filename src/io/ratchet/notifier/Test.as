@@ -17,8 +17,6 @@ package io.ratchet.notifier {
         protected var uncaughtButton:Sprite = new Sprite();
 
         public function Test() {
-            trace("yo dawg");
-
             // Initialize the Ratchet notifier.
             Ratchet.init(this,  // stage must be passed as first param
                 ACCESS_TOKEN,  // your ratchet.io project access token

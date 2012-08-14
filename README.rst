@@ -26,7 +26,7 @@ Configuration
 -------------
 At the topmost level of your display list, instantiate the Ratchet singleton.
     
-    ratchet = Ratchet.init(stage, accessToken, environment, userIp);
+    Ratchet.init(stage, accessToken, environment, userIp);
 
 Here's the full list of constructor parameters:
 

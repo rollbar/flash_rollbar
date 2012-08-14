@@ -30,7 +30,7 @@ package io.ratchet.notifier {
          */
         public static function init(parent:DisplayObjectContainer, accessToken:String, environment:String, userIp:String = null,
             rootPath:String = null, codeBranch:String = null, serverData:Object = null, maxItemCount:int = 5,
-            submitUrl:String = null):void {
+            endpointUrl:String = null):void {
 
             if (notifier !== null) {
                 trace("WARNING: Ratchet.init() called more than once. Subsequent calls ignored.");
@@ -38,7 +38,7 @@ package io.ratchet.notifier {
             }
             
             notifier = new RatchetNotifier(accessToken, environment, userIp, rootPath, codeBranch, serverData, 
-                maxItemCount, submitUrl);
+                maxItemCount, endpointUrl);
             parent.addChild(notifier);
         }
         

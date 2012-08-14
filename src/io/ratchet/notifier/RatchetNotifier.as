@@ -52,7 +52,7 @@ package io.ratchet.notifier {
         private var queryString:String;
         private var serverData:Object;
         private var itemCount:int = 0;
-        private var submitUrl:String;
+        private var endpointUrl:String;
         private var maxItemCount:int;
         private var userIp:String;
         private var startTime:int;
@@ -66,12 +66,12 @@ package io.ratchet.notifier {
                                         codeBranch:String=null,
                                         serverData:Object=null,
                                         maxItemCount:int=5,
-                                        submitUrl:String=null) {
+                                        endpointUrl:String=null) {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};
             this.userIp = userIp;
-            this.submitUrl = submitUrl || API_ENDPONT_URL;
+            this.endpointUrl = endpointUrl || API_ENDPONT_URL;
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
             this.branch = codeBranch || "master";
             this.rootPath = rootPath;
@@ -152,7 +152,7 @@ package io.ratchet.notifier {
                 var request:URLRequest = new URLRequest();
                 request.method = URLRequestMethod.POST;
                 request.data = JSONEncoder.encode(payload);
-                request.url = this.submitUrl;         
+                request.url = this.endpointUrl;         
 
                 loader.load(request);
                 itemCount++;

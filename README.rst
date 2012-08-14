@@ -53,7 +53,7 @@ serverData
     An Object containing any data you would like to pass along with this item to store.
 maxItemCount
     The maximum number of items to send to Ratchet.io_ for the lifetime of the notifier instance. This is useful for rate-limiting the number of items sent to Ratchet.io_.
-submitUrl
+endpointUrl
     URL items are posted to.
     
     **default:** ``https://submit.ratchet.io/api/1/item/``

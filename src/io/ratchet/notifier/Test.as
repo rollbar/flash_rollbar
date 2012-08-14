@@ -10,7 +10,7 @@ package io.ratchet.notifier {
 
     public class Test extends Sprite {
         // change to your own access token
-        public static const ACCESS_TOKEN:String = 'ACCESS_TOKEN';
+        public static const ACCESS_TOKEN:String = 'YOUR_ACCESS_TOKEN';
         public static const ENV:String = 'production';
 
         protected var caughtButton:Sprite = new Sprite();
@@ -20,7 +20,7 @@ package io.ratchet.notifier {
             trace("yo dawg");
 
             // Initialize the Ratchet notifier.
-            Ratchet.init(stage,  // stage must be passed as first param
+            Ratchet.init(this,  // stage must be passed as first param
                 ACCESS_TOKEN,  // your ratchet.io project access token
                 ENV,  // environment name - i.e. "production" or "development"
                 "68.126.176.252",  // user's ip address. pass in via a flashvar.

@@ -235,7 +235,6 @@ package io.ratchet.notifier {
                 access_token: accessToken,
                 data: {
                     environment: environment,
-                    timestamp: int((new Date()).getTime() / 1000),
                     platform: "flash",
                     language: "as3",
                     request: {
@@ -246,6 +245,7 @@ package io.ratchet.notifier {
                     },
                     client: {
                         runtime_ms: getTimer(),
+                        timestamp: int((new Date()).getTime() / 1000),
                         root: rootPath,
                         branch: branch,
                         flash: {

@@ -1,3 +1,5 @@
+*.swp
+*.swo
 # Project property files
 .actionScriptProperties
 .flexProperties

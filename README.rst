@@ -26,20 +26,20 @@ Configuration
 -------------
 At the topmost level of your display list, instantiate the Ratchet singleton.
     
-    Ratchet.init(stage, accessToken, environment, userIp);
+    Ratchet.init(this, accessToken, environment);
 
-Here's the full list of constructor parameters:
+Here's the full list of constructor parameters (in order):
 
-stage
-    The parent display object container. The notifier will report all errors for SWFs that are loaded with stage.loaderInfo.
+parent
+    The parent display object container; should usually be "this". The notifier will report all errors for SWFs that are loaded with parent.loaderInfo.
 accessToken
     Access token from your Ratchet.io project
 environment
     Environment name. Any string up to 255 chars is OK. For best results, use "production" for your production environment.
 
     **default:** ``production``
-userIp
-    The IP address of the user playing the flash movie. You should rely on the IP your server recognizes for the user in case the user is behind a firewall or NAT gateway.
+userId
+    A string identifier for the user playing the flash movie.
 rootPath
     If you compiled the SWC/SWF using the debug or verbose stack trace flags, you'll want this to be the absolute path to the root of your Actionscript source code, not including the final ``/``.
 

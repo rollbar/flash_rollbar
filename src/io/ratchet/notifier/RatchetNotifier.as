@@ -38,7 +38,7 @@ package io.ratchet.notifier {
     public final class RatchetNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.1"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.2"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RatchetNotifier = null;
@@ -54,23 +54,23 @@ package io.ratchet.notifier {
         private var itemCount:int = 0;
         private var endpointUrl:String;
         private var maxItemCount:int;
-        private var userIp:String;
+        private var userId:String;
         private var startTime:int;
         private var branch:String;
         private var rootPath:String;
 
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
-                                        userIp:String=null,
-                                        rootPath:String=null,
-                                        codeBranch:String=null,
-                                        serverData:Object=null,
-                                        maxItemCount:int=5,
-                                        endpointUrl:String=null) {
+                                        userId:String = null,
+                                        rootPath:String = null,
+                                        codeBranch:String = null,
+                                        serverData:Object = null,
+                                        maxItemCount:int = 5,
+                                        endpointUrl:String = null) {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};
-            this.userIp = userIp;
+            this.userId = userId;
             this.endpointUrl = endpointUrl || API_ENDPONT_URL;
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
             this.branch = codeBranch || "master";
@@ -241,7 +241,8 @@ package io.ratchet.notifier {
                     request: {
                         url: embeddedUrl,
                         query_string: queryString,
-                        user_ip: userIp
+                        user_ip: "$remote_ip",
+                        user_id: userId
                     },
                     client: {
                         runtime_ms: getTimer(),

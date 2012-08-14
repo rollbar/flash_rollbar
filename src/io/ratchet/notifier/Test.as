@@ -18,10 +18,10 @@ package io.ratchet.notifier {
 
         public function Test() {
             // Initialize the Ratchet notifier.
-            Ratchet.init(this,  // stage must be passed as first param
+            Ratchet.init(this,  // pass this sprite as first param
                 ACCESS_TOKEN,  // your ratchet.io project access token
                 ENV,  // environment name - i.e. "production" or "development"
-                "68.126.176.252",  // user's ip address. pass in via a flashvar.
+                "user123",  // user id (optional). pass in via a flashvar.
                 "/Users/coryvirok/Development/flash_ratchet/src"  // the path to the application code root, 
                     // not including the final slash.
                     // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true

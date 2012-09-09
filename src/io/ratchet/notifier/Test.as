@@ -10,7 +10,7 @@ package io.ratchet.notifier {
 
     public class Test extends Sprite {
         // change to your own access token
-        public static const ACCESS_TOKEN:String = 'YOUR_ACCESS_TOKEN';
+        public static const ACCESS_TOKEN:String = '027f39d0897d4cfabad370ef3e308f68';
         public static const ENV:String = 'production';
 
         protected var caughtButton:Sprite = new Sprite();
@@ -22,12 +22,13 @@ package io.ratchet.notifier {
                 ACCESS_TOKEN,  // your ratchet.io project access token
                 ENV,  // environment name - i.e. "production" or "development"
                 "user123",  // user id (optional). pass in via a flashvar.
-                "/Users/coryvirok/Development/flash_ratchet/src"  // the path to the application code root, 
+                "/Users/coryvirok/Development/flash-ratchet",  // the path to the project root, 
                     // not including the final slash.
                     // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
                     // or -debug, you'll want to have this path reflect the root path from the
                     // user who published the SWF/SWC file. Otherwise, you can set it to the
                     // source directory of your project, e.g. "src".
+                "/Users/coryvirok/Development/flash-ratchet/src"  // the source code path
             );
 
             mouseEnabled = true;

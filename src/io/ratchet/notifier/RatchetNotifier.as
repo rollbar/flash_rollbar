@@ -38,7 +38,7 @@ package io.ratchet.notifier {
     public final class RatchetNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.2"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.3"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RatchetNotifier = null;
@@ -58,11 +58,13 @@ package io.ratchet.notifier {
         private var startTime:int;
         private var branch:String;
         private var rootPath:String;
+        private var srcPath:String;
 
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
                                         userId:String = null,
                                         rootPath:String = null,
+                                        srcPath:String = null,
                                         codeBranch:String = null,
                                         serverData:Object = null,
                                         maxItemCount:int = 5,
@@ -75,6 +77,7 @@ package io.ratchet.notifier {
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
             this.branch = codeBranch || "master";
             this.rootPath = rootPath;
+            this.srcPath = srcPath;
 
             loader = new URLLoader();
             loader.dataFormat = URLLoaderDataFormat.TEXT;
@@ -212,7 +215,7 @@ package io.ratchet.notifier {
          * stackTrace should come from error.getStackTrace()
          */
         private function buildDebugPayload(stackTrace:String):Object {
-            var stackTraceObj:StackTrace = StackTraceParser.parseStackTrace(stackTrace);
+            var stackTraceObj:StackTrace = StackTraceParser.parseStackTrace(srcPath, stackTrace);
 
             var payload:Object = buildCommonPayload();
             payload.data.body = {

@@ -24,21 +24,24 @@ package io.ratchet.notifier {
          * @param environment Environment name (i.e. "development", "production")
          * @param userId User identifier (as a string)
          * @param rootPath Path to the application code root, not including the final slash.
+         * @param srcPath Path to the source code root, not including the final slash.
          * @param codeBranch Code branch name, e.g. "master"
          * @param serverData Object containing server information, will be passed along with error reports
          * @param maxItemCount Max number of items to report per load.
          */
-        public static function init(parent:DisplayObjectContainer, accessToken:String, environment:String, userId:String = null,
-            rootPath:String = null, codeBranch:String = null, serverData:Object = null, maxItemCount:int = 5,
-            endpointUrl:String = null):void {
+        public static function init(parent:DisplayObjectContainer,
+            accessToken:String, environment:String, userId:String = null,
+            rootPath:String = null, srcPath:String = null,
+            codeBranch:String = null, serverData:Object = null,
+            maxItemCount:int = 5, endpointUrl:String = null):void {
 
             if (notifier !== null) {
                 trace("WARNING: Ratchet.init() called more than once. Subsequent calls ignored.");
                 return;
             }
             
-            notifier = new RatchetNotifier(accessToken, environment, userId, rootPath, codeBranch, serverData, 
-                maxItemCount, endpointUrl);
+            notifier = new RatchetNotifier(accessToken, environment, userId, rootPath, srcPath,
+                    codeBranch, serverData, maxItemCount, endpointUrl);
             parent.addChild(notifier);
         }
         

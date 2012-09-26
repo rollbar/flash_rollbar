@@ -40,14 +40,14 @@ environment
     **default:** ``production``
 user
     Optional but can be one of:
-    - A string identifier for the current user.
-    - An object describing the current user, containing
+
+    * A string identifier for the current user.
+    * An object describing the current user, containing
+
       - Required - id, userId, user_id, user
       - Optional - email, userEmail, user_email, emailAddress, email_address
       - Optional - username, userName, user_name, name
-    - A function returning an object like the one described above
-
-    **default:** ``null``
+    * A function returning an object like the one described above
 rootPath
     If you compiled the SWC/SWF using the debug or verbose stack trace flags, you'll want this to be the absolute path to the root of your Actionscript source code, not including the final ``/``.
 

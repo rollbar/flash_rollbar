@@ -21,7 +21,9 @@ package io.ratchet.notifier {
             Ratchet.init(this,  // pass this sprite as first param
                 ACCESS_TOKEN,  // your ratchet.io project access token
                 ENV,  // environment name - i.e. "production" or "development"
-                "user123",  // user id (optional). pass in via a flashvar.
+                function():Object {
+                    return {user_id: "user123", name: "Cory Virok"}
+                },  // user fn/id (optional).
                 "/Users/coryvirok/Development/flash-ratchet",  // the path to the project root, 
                     // not including the final slash.
                     // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true

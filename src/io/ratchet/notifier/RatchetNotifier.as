@@ -38,7 +38,7 @@ package io.ratchet.notifier {
     public final class RatchetNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.3"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.4"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RatchetNotifier = null;
@@ -54,7 +54,9 @@ package io.ratchet.notifier {
         private var itemCount:int = 0;
         private var endpointUrl:String;
         private var maxItemCount:int;
+        private var personFn:Function;
         private var userId:String;
+        private var person:Object;
         private var startTime:int;
         private var branch:String;
         private var rootPath:String;
@@ -62,7 +64,7 @@ package io.ratchet.notifier {
 
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
-                                        userId:String = null,
+                                        user:* = null,
                                         rootPath:String = null,
                                         srcPath:String = null,
                                         codeBranch:String = null,
@@ -72,12 +74,24 @@ package io.ratchet.notifier {
             this.accessToken = accessToken;
             this.environment = environment;
             this.serverData = serverData || {};
-            this.userId = userId;
             this.endpointUrl = endpointUrl || API_ENDPONT_URL;
             this.maxItemCount = maxItemCount || MAX_ITEM_COUNT;
             this.branch = codeBranch || "master";
             this.rootPath = rootPath;
             this.srcPath = srcPath;
+
+            if (user) {
+                if (user is Function) {
+                    this.personFn = user;
+                } else if (user is String) {
+                    this.userId = user;
+                } else if (user is Object) {
+                    this.person = user;
+                    this.userId = resolveField(['id', 'userId', 'user_id', 'user'], user);
+                } else {
+                    this.userId = '' + user;
+                }
+            }
 
             loader = new URLLoader();
             loader.dataFormat = URLLoaderDataFormat.TEXT;
@@ -229,11 +243,42 @@ package io.ratchet.notifier {
             };
             return payload;
         }
-        
+
+        private function resolveField(fieldNames:Array, storage:Object):String {
+            var index:Number;
+            var len:Number = fieldNames.length;
+            for (index = 0; index < len; ++index) {
+                try {
+                    return storage[fieldNames[index]].toString();
+                } catch (e:*) {
+                    // ignore
+                }
+            }
+            return null;
+        }
+
         /**
          * Builds and returns common payload data. Used by buildReleasePayload and buildDebugPayload.
          */
         private function buildCommonPayload():Object {
+            var tmpPerson:Object = this.person || (this.personFn != null ? this.personFn() : null);
+            var userId:String = this.userId || resolveField(['id', 'userId', 'user_id', 'user'], tmpPerson);
+            var person:Object;
+
+            if (userId) {
+                person = {id: userId};
+                var email:String = resolveField(['email', 'emailAddress', 'email_address',
+                        'userEmail', 'user_email'], tmpPerson);
+                var username:String = resolveField(['username', 'userName', 'user_name', 'name'], tmpPerson);
+
+                if (email) {
+                    person['email'] = email;
+                }
+                if (username) {
+                    person['username'] = username;
+                }
+            }
+
             var payload:Object = {
                 access_token: accessToken,
                 data: {
@@ -283,6 +328,10 @@ package io.ratchet.notifier {
                     notifier: NOTIFIER_DATA
                 }
             };
+
+            if (person) {
+                payload['data']['person'] = person;
+            }
             return payload;
         }
         

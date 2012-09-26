@@ -38,11 +38,11 @@ environment
     Environment name. Any string up to 255 chars is OK. For best results, use "production" for your production environment.
 
     **default:** ``production``
-user
+person
     Optional but can be one of:
 
-    * A string identifier for the current user.
-    * An object describing the current user, containing
+    * A string identifier for the current person/user.
+    * An object describing the current person/user, containing
 
       - Required - id, userId, user_id, user
       - Optional - email, userEmail, user_email, emailAddress, email_address

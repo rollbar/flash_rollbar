@@ -64,7 +64,7 @@ package io.ratchet.notifier {
 
         public function RatchetNotifier(accessToken:String,
                                         environment:String,
-                                        user:* = null,
+                                        person:* = null,
                                         rootPath:String = null,
                                         srcPath:String = null,
                                         codeBranch:String = null,
@@ -80,16 +80,16 @@ package io.ratchet.notifier {
             this.rootPath = rootPath;
             this.srcPath = srcPath;
 
-            if (user) {
-                if (user is Function) {
-                    this.personFn = user;
-                } else if (user is String) {
-                    this.userId = user;
-                } else if (user is Object) {
-                    this.person = user;
-                    this.userId = resolveField(['id', 'userId', 'user_id', 'user'], user);
+            if (person) {
+                if (person is Function) {
+                    this.personFn = person;
+                } else if (person is String) {
+                    this.userId = person;
+                } else if (person is Object) {
+                    this.person = person;
+                    this.userId = resolveField(['id', 'userId', 'user_id', 'user'], person);
                 } else {
-                    this.userId = '' + user;
+                    this.userId = '' + person;
                 }
             }
 

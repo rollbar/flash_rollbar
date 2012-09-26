@@ -22,7 +22,7 @@ package io.ratchet.notifier {
          * @param stage The stage
          * @param accessToken Ratchet.io project access token
          * @param environment Environment name (i.e. "development", "production")
-         * @param user User identifier string or object or function which returns a string/object.
+         * @param person Person identifier string or object or function which returns an object.
          * @param rootPath Path to the application code root, not including the final slash.
          * @param srcPath Path to the source code root, not including the final slash.
          * @param codeBranch Code branch name, e.g. "master"
@@ -30,7 +30,7 @@ package io.ratchet.notifier {
          * @param maxItemCount Max number of items to report per load.
          */
         public static function init(parent:DisplayObjectContainer,
-            accessToken:String, environment:String, user:* = null,
+            accessToken:String, environment:String, person:* = null,
             rootPath:String = null, srcPath:String = null,
             codeBranch:String = null, serverData:Object = null,
             maxItemCount:int = 5, endpointUrl:String = null):void {
@@ -40,7 +40,7 @@ package io.ratchet.notifier {
                 return;
             }
             
-            notifier = new RatchetNotifier(accessToken, environment, user, rootPath, srcPath,
+            notifier = new RatchetNotifier(accessToken, environment, person, rootPath, srcPath,
                     codeBranch, serverData, maxItemCount, endpointUrl);
             parent.addChild(notifier);
         }

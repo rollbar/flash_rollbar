@@ -61,7 +61,7 @@ package io.ratchet.notifier {
             notifier.handleErrorEvent(event);
         }
 
-        public function handleOtherEvent(event:*):void {
+        public static function handleOtherEvent(event:*):void {
             if (notifier === null) {
                 trace("WARNING: Ratchet.handleOtherEvent() called before init(). Call ignored.");
                 return;

@@ -1,4 +1,4 @@
-package io.ratchet.notifier {
+package io.rollbar.notifier {
     import flash.display.Sprite;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
@@ -6,7 +6,7 @@ package io.ratchet.notifier {
     import flash.text.TextFormatAlign;
     import flash.events.*;
 
-    import io.ratchet.notifier.Ratchet;
+    import io.rollbar.notifier.Rollbar;
 
     public class Test extends Sprite {
         // change to your own access token
@@ -17,20 +17,20 @@ package io.ratchet.notifier {
         protected var uncaughtButton:Sprite = new Sprite();
 
         public function Test() {
-            // Initialize the Ratchet notifier.
-            Ratchet.init(this,  // pass this sprite as first param
-                ACCESS_TOKEN,  // your ratchet.io project access token
+            // Initialize the Rollbar notifier.
+            Rollbar.init(this,  // pass this sprite as first param
+                ACCESS_TOKEN,  // your rollbar project access token
                 ENV,  // environment name - i.e. "production" or "development"
                 function():Object {
                     return {user_id: "user123", name: "Cory Virok"}
                 },  // user fn/id (optional).
-                "/Users/coryvirok/Development/flash-ratchet",  // the path to the project root, 
+                "/Users/coryvirok/Development/flash-rollbar",  // the path to the project root, 
                     // not including the final slash.
                     // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
                     // or -debug, you'll want to have this path reflect the root path from the
                     // user who published the SWF/SWC file. Otherwise, you can set it to the
                     // source directory of your project, e.g. "src".
-                "/Users/coryvirok/Development/flash-ratchet/src"  // the source code path
+                "/Users/coryvirok/Development/flash-rollbar/src"  // the source code path
             );
 
             mouseEnabled = true;
@@ -84,7 +84,7 @@ package io.ratchet.notifier {
                 causeError();
             } catch (e:Error) {
                 trace('caught error within try/catch');
-                Ratchet.handleError(e);
+                Rollbar.handleError(e);
             }
         }
 

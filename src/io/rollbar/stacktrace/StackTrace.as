@@ -1,4 +1,4 @@
-package io.ratchet.stacktrace {
+package io.rollbar.stacktrace {
     public class StackTrace {
         public var errorClassName:String = "";
         public var message:String = "";

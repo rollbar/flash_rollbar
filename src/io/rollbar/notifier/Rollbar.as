@@ -1,26 +1,26 @@
-package io.ratchet.notifier {
+package io.rollbar.notifier {
 
     import flash.display.DisplayObjectContainer;
     import flash.events.ErrorEvent;
 
-    import io.ratchet.notifier.RatchetNotifier;
+    import io.rollbar.notifier.RollbarNotifier;
 
     /**
-     * Static wrapper around a RatchetNotifier singleton.
+     * Static wrapper around a RollbarNotifier singleton.
      *
-     * Use this unless you have some specific reason to use RatchetNotifer directly.
+     * Use this unless you have some specific reason to use RollbarNotifer directly.
      */
-    public final class Ratchet {
+    public final class Rollbar {
 
-        private static var notifier:RatchetNotifier = null;
+        private static var notifier:RollbarNotifier = null;
 
         /**
-         * Initialize the Ratchet notifier. Constructs a RatchetNotifier instance and adds it to the stage,
+         * Initialize the Rollbar notifier. Constructs a RollbarNotifier instance and adds it to the stage,
          * which will trigger final initialization.
-         * All arguments after 'stage' are passed to RatchetNotifier's constructor.
+         * All arguments after 'stage' are passed to RollbarNotifier's constructor.
          *
          * @param stage The stage
-         * @param accessToken Ratchet.io project access token
+         * @param accessToken Rollbar project access token
          * @param environment Environment name (i.e. "development", "production")
          * @param person Person identifier string or object or function which returns an object.
          * @param rootPath Path to the application code root, not including the final slash.
@@ -36,18 +36,18 @@ package io.ratchet.notifier {
             maxItemCount:int = 5, endpointUrl:String = null):void {
 
             if (notifier !== null) {
-                trace("WARNING: Ratchet.init() called more than once. Subsequent calls ignored.");
+                trace("WARNING: Rollbar.init() called more than once. Subsequent calls ignored.");
                 return;
             }
             
-            notifier = new RatchetNotifier(accessToken, environment, person, rootPath, srcPath,
+            notifier = new RollbarNotifier(accessToken, environment, person, rootPath, srcPath,
                     codeBranch, serverData, maxItemCount, endpointUrl);
             parent.addChild(notifier);
         }
         
         public static function handleError(err:Error):void {
             if (notifier === null) {
-                trace("WARNING: Ratchet.handleError() called before init(). Call ignored.");
+                trace("WARNING: Rollbar.handleError() called before init(). Call ignored.");
                 return;
             }
             notifier.handleError(err);
@@ -55,7 +55,7 @@ package io.ratchet.notifier {
 
         public static function handleErrorEvent(event:ErrorEvent):void {
             if (notifier === null) {
-                trace("WARNING: Ratchet.handleErrorEvent() called before init(). Call ignored.");
+                trace("WARNING: Rollbar.handleErrorEvent() called before init(). Call ignored.");
                 return;
             }
             notifier.handleErrorEvent(event);
@@ -63,7 +63,7 @@ package io.ratchet.notifier {
 
         public static function handleOtherEvent(event:*):void {
             if (notifier === null) {
-                trace("WARNING: Ratchet.handleOtherEvent() called before init(). Call ignored.");
+                trace("WARNING: Rollbar.handleOtherEvent() called before init(). Call ignored.");
                 return;
             }
             notifier.handleOtherEvent(event);

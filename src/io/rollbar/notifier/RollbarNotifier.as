@@ -1,4 +1,4 @@
-package io.ratchet.notifier {
+package io.rollbar.notifier {
 
     import flash.display.Sprite;
     import flash.display.LoaderInfo;
@@ -27,21 +27,21 @@ package io.ratchet.notifier {
 
     import flash.utils.getTimer;
 
-    import io.ratchet.json.JSONEncoder;
-    import io.ratchet.stacktrace.StackTrace;
-    import io.ratchet.stacktrace.StackTraceParser;
+    import io.rollbar.json.JSONEncoder;
+    import io.rollbar.stacktrace.StackTrace;
+    import io.rollbar.stacktrace.StackTraceParser;
 
     [Event(name="complete", type="flash.events.Event")]
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
     [Event(name="ioError", type="flash.events.IOErrorEvent")]
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
-    public final class RatchetNotifier extends Sprite {
+    public final class RollbarNotifier extends Sprite {
 
-        private static const API_ENDPONT_URL:String = "https://submit.ratchet.io/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_ratchet", version: "0.4"};
+        private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.5"};
         private static const MAX_ITEM_COUNT:int = 5;
 
-        private static var instance:RatchetNotifier = null;
+        private static var instance:RollbarNotifier = null;
         
         private var loader:URLLoader;
 
@@ -62,7 +62,7 @@ package io.ratchet.notifier {
         private var rootPath:String;
         private var srcPath:String;
 
-        public function RatchetNotifier(accessToken:String,
+        public function RollbarNotifier(accessToken:String,
                                         environment:String,
                                         person:* = null,
                                         rootPath:String = null,

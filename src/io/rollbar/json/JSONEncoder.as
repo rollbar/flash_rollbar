@@ -32,7 +32,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package io.ratchet.json {
+package io.rollbar.json {
     
     import flash.utils.describeType;
     

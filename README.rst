@@ -1,39 +1,39 @@
-flash_ratchet
+flash_rollbar
 ===============
 
-flash_ratchet is an Actionscript client for reporting errors to Ratchet.io_.
+flash_rollbar is an Actionscript client for reporting errors to Rollbar_.
 
 
 Requirements
 ------------
-flash_ratchet requires:
+flash_rollbar requires:
 
 - Flash Player 10.1+
   - May work on 9 but it's untested
 - mxmlc/compc if you plan on building from source
-- a Ratchet.io `error reporting`_ account
+- a Rollbar `error reporting`_ account
 
 
 Installation
 ------------
 SWC
-    Download the RatchetNotifier.swc file and add to your project's library path
+    Download the RollbarNotifier.swc file and add to your project's library path
     
 Source
     Download the full source and add to your project's source path
 
 Configuration
 -------------
-At the topmost level of your display list, instantiate the Ratchet singleton.
+At the topmost level of your display list, instantiate the Rollbar singleton.
     
-    Ratchet.init(this, accessToken, environment);
+    Rollbar.init(this, accessToken, environment);
 
 Here's the full list of constructor parameters (in order):
 
 parent
     The parent display object container; should usually be "this". The notifier will report all errors for SWFs that are loaded with parent.loaderInfo.
 accessToken
-    Access token from your Ratchet.io project
+    Access token from your Rollbar project
 environment
     Environment name. Any string up to 255 chars is OK. For best results, use "production" for your production environment.
 
@@ -63,24 +63,24 @@ codeBranch
 serverData
     An Object containing any data you would like to pass along with this item to store.
 maxItemCount
-    The maximum number of items to send to Ratchet.io_ for the lifetime of the notifier instance. This is useful for rate-limiting the number of items sent to Ratchet.io_.
+    The maximum number of items to send to Rollbar_ for the lifetime of the notifier instance. This is useful for rate-limiting the number of items sent to Rollbar_.
 endpointUrl
     URL items are posted to.
     
-    **default:** ``https://submit.ratchet.io/api/1/item/``
+    **default:** ``https://api.rollbar.com/api/1/item/``
 
 
 Contributing
 ------------
 
-Contributions are welcome. The project is hosted on github at http://github.com/ratchetio/flash_ratchet
+Contributions are welcome. The project is hosted on github at http://github.com/rollbar/flash_rollbar
 
 
 Additional Help
 ---------------
-If you have any questions, feedback, etc., drop me a line at cory@ratchet.io
+If you have any questions, feedback, etc., drop me a line at cory@rollbar.com
 
 
-.. _Ratchet.io: http://ratchet.io/
-.. _error reporting: http://ratchet.io/
-.. _flash_ratchet: http://github.com/ratchetio/flash_ratchet
+.. _Rollbar: http://rollbar.com/
+.. _error reporting: http://rollbar.com/
+.. _flash_rollbar: http://github.com/rollbar/flash_rollbar

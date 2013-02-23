@@ -1,4 +1,4 @@
-package io.rollbar.notifier {
+package com.rollbar.notifier {
     import flash.display.Sprite;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
@@ -6,7 +6,7 @@ package io.rollbar.notifier {
     import flash.text.TextFormatAlign;
     import flash.events.*;
 
-    import io.rollbar.notifier.Rollbar;
+    import com.rollbar.notifier.Rollbar;
 
     public class Test extends Sprite {
         // change to your own access token

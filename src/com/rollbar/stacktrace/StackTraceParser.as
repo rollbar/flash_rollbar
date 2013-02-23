@@ -1,5 +1,5 @@
 // Adapted from https://github.com/StephanPartzsch/as3-airbrake-notifier
-package io.rollbar.stacktrace {
+package com.rollbar.stacktrace {
     public class StackTraceParser {
         public static function parseStackTrace(srcPath:String, stackTraceString:String):StackTrace {
             var data:Array = stackTraceString.split("\tat ");

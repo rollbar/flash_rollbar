@@ -1,4 +1,4 @@
-package io.rollbar.notifier {
+package com.rollbar.notifier {
 
     import flash.display.Sprite;
     import flash.display.LoaderInfo;
@@ -27,9 +27,9 @@ package io.rollbar.notifier {
 
     import flash.utils.getTimer;
 
-    import io.rollbar.json.JSONEncoder;
-    import io.rollbar.stacktrace.StackTrace;
-    import io.rollbar.stacktrace.StackTraceParser;
+    import com.rollbar.json.JSONEncoder;
+    import com.rollbar.stacktrace.StackTrace;
+    import com.rollbar.stacktrace.StackTraceParser;
 
     [Event(name="complete", type="flash.events.Event")]
     [Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]

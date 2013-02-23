@@ -1,4 +1,4 @@
-package io.rollbar.stacktrace {
+package com.rollbar.stacktrace {
     public class StackTraceLine {
         public var file:String = "";
         public var number:String = "";

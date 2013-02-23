@@ -1,9 +1,9 @@
-package io.rollbar.notifier {
+package com.rollbar.notifier {
 
     import flash.display.DisplayObjectContainer;
     import flash.events.ErrorEvent;
 
-    import io.rollbar.notifier.RollbarNotifier;
+    import com.rollbar.notifier.RollbarNotifier;
 
     /**
      * Static wrapper around a RollbarNotifier singleton.

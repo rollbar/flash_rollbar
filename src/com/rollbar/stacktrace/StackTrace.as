@@ -1,4 +1,4 @@
-package io.rollbar.stacktrace {
+package com.rollbar.stacktrace {
     public class StackTrace {
         public var errorClassName:String = "";
         public var message:String = "";

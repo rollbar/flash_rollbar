@@ -10,13 +10,15 @@ package com.rollbar.notifier {
 
     public class Test extends Sprite {
         // change to your own access token
-        public static const ACCESS_TOKEN:String = '027f39d0897d4cfabad370ef3e308f68';
+        public static const ACCESS_TOKEN:String = '2f5ce4c49aec41c2bba8c3c5c448f8b2';
         public static const ENV:String = 'production';
 
         protected var caughtButton:Sprite = new Sprite();
         protected var uncaughtButton:Sprite = new Sprite();
 
         public function Test() {
+            trace('Building Rollbar test...');
+
             // Initialize the Rollbar notifier.
             Rollbar.init(this,  // pass this sprite as first param
                 ACCESS_TOKEN,  // your rollbar project access token
@@ -24,13 +26,13 @@ package com.rollbar.notifier {
                 function():Object {
                     return {user_id: "user123", name: "Cory Virok"}
                 },  // user fn/id (optional).
-                "/Users/coryvirok/Development/flash-rollbar",  // the path to the project root, 
+                "/Users/coryvirok/Development/flash_rollbar",  // the path to the project root, 
                     // not including the final slash.
                     // Note: if the SWF/SWC is compiled with compiler.verbose-stacktraces=true
                     // or -debug, you'll want to have this path reflect the root path from the
                     // user who published the SWF/SWC file. Otherwise, you can set it to the
                     // source directory of your project, e.g. "src".
-                "/Users/coryvirok/Development/flash-rollbar/src"  // the source code path
+                "/Users/coryvirok/Development/flash_rollbar/src"  // the source code path
             );
 
             mouseEnabled = true;

@@ -20,6 +20,7 @@ package com.rollbar.notifier {
             trace('Building Rollbar test...');
 
             // Initialize the Rollbar notifier.
+            /*
             Rollbar.init(this,  // pass this sprite as first param
                 ACCESS_TOKEN,  // your rollbar project access token
                 ENV,  // environment name - i.e. "production" or "development"
@@ -34,6 +35,10 @@ package com.rollbar.notifier {
                     // source directory of your project, e.g. "src".
                 "/Users/coryvirok/Development/flash_rollbar/src"  // the source code path
             );
+            */
+
+            Rollbar.init(this, ACCESS_TOKEN, ENV);
+            Rollbar.handleError(new Error("flash test error", 666));
 
             mouseEnabled = true;
             mouseChildren = true;

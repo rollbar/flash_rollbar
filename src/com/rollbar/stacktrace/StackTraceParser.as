@@ -21,24 +21,33 @@ package com.rollbar.stacktrace {
 
         private static function parseStackTraceLine(lineString:String):StackTraceLine {
             var stackTraceLine:StackTraceLine = new StackTraceLine();
-
-            var methodNameIndex:int = lineString.indexOf("/");
-            var methodName:String = lineString.substr(methodNameIndex + 1);
-            var debugIndex:int = methodName.indexOf("[");
-
-            if (debugIndex == -1) {
-                stackTraceLine.method = trim(methodName);
-                stackTraceLine.number = "";
-
-                var filePath:String = lineString.substr(0, methodNameIndex);
-                filePath = filePath.replace(/\./g, '/').replace('::', '/') + '.as';
+            
+            // Grab method name by looking from either ':' or '/' up to and including '()'
+            var methodPat:RegExp = /[:|\/](\w+\(\))/;
+            var methodName:String = methodPat.exec(lineString)[1];
+            
+            stackTraceLine.method = methodName;
+            
+            // Grab debug file path if it exists by looking from a '[' to a ':'
+            var filePath:String;
+            var debugFilePat:RegExp = /\[([\w\/\.]+):/;
+            var debugFilePatMatch:Object = debugFilePat.exec(lineString);
+            if (debugFilePatMatch) {
+                filePath = debugFilePatMatch[1];
+            }
+            
+            if (filePath) { // Debug line with file path and line number
+                var linePat:RegExp = /:(\d+)\]/;
+                var lineNumber:String = linePat.exec(lineString)[1];
+                
+                stackTraceLine.number = lineNumber;
                 stackTraceLine.file = filePath;
-            } else {
-                var colonPos:int = methodName.lastIndexOf(":");
-                var lastBracketPos:int = methodName.lastIndexOf("]");
-                stackTraceLine.method = methodName.substr(0, debugIndex);
-                stackTraceLine.number = methodName.substring(colonPos + 1, lastBracketPos);
-                stackTraceLine.file = methodName.substring(debugIndex + 1, colonPos);
+            } else { // Non-debug line with no file path and no line number
+                var filePat:RegExp = /([\w\.:]+)[\(|\/]/;
+                filePath = filePat.exec(lineString)[1];
+                
+                stackTraceLine.number = "";
+                stackTraceLine.file = filePath.replace(/[\.|::]/g, '/') + '.as';
             }
 
             return stackTraceLine;

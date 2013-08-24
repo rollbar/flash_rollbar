@@ -37,9 +37,8 @@ package com.rollbar.notifier {
     [Event(name="securityError", type="flash.events.SecurityErrorEvent")]
     public final class RollbarNotifier extends Sprite {
 
-        //private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
-        private static const API_ENDPONT_URL:String = "http://localhost:8000/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.6"};
+        private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.7"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RollbarNotifier = null;

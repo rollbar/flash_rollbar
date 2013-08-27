@@ -38,12 +38,13 @@ package com.rollbar.notifier {
     public final class RollbarNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.7"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.8"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RollbarNotifier = null;
         
-        private var loader:URLLoader;
+        // Keep URLLoaders from being garbage collected before they finish
+        private var loaders:Array;
 
         private var accessToken:String;
         private var environment:String;
@@ -79,6 +80,8 @@ package com.rollbar.notifier {
             this.branch = codeBranch || "master";
             this.rootPath = rootPath;
             this.srcPath = srcPath;
+            
+            this.loaders = new Array();
 
             if (person) {
                 if (person is Function) {
@@ -92,14 +95,6 @@ package com.rollbar.notifier {
                     this.userId = '' + person;
                 }
             }
-
-            loader = new URLLoader();
-            loader.dataFormat = URLLoaderDataFormat.TEXT;
- 
-            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, handleUrlLoaderEvent);
-            loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
-            loader.addEventListener(Event.COMPLETE, handleUrlLoaderEvent);
 
             addEventListener(Event.ADDED_TO_STAGE, function(event:Event):void {
                 swfUrl = unescape(parent.loaderInfo.url);
@@ -136,11 +131,6 @@ package com.rollbar.notifier {
         }
 
         public function dispose():void {
-            loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handleUrlLoaderEvent);
-            loader.removeEventListener(IOErrorEvent.IO_ERROR, handleUrlLoaderEvent);
-            loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, handleUrlLoaderEvent);
-            loader.removeEventListener(Event.COMPLETE, handleUrlLoaderEvent);
-            loader = null;
         }
 
         private function handleUncaughtError(event:UncaughtErrorEvent):void {
@@ -169,17 +159,37 @@ package com.rollbar.notifier {
                 var request:URLRequest = new URLRequest();
                 request.method = URLRequestMethod.POST;
                 request.data = JSONEncoder.encode(payload);
-                request.url = this.endpointUrl;         
+                request.url = this.endpointUrl;
+                
+                var loader:URLLoader = new URLLoader();
+                loader.dataFormat = URLLoaderDataFormat.TEXT;
+                
+                var handler:Function = function(event:Event):void {
+                    for (var i:int = 0; i < loaders.length; ++i) {
+                        if (loaders[i] == loader) {
+                            loaders.splice(i, 1);
+                            break;
+                        }
+                    }
+                    
+                    loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, handler);
+                    loader.removeEventListener(IOErrorEvent.IO_ERROR, handler);
+                    loader.removeEventListener(Event.COMPLETE, handler);
+                    
+                    dispatchEvent(event);
+                }
+                
+                loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handler);
+                loader.addEventListener(IOErrorEvent.IO_ERROR, handler);
+                loader.addEventListener(Event.COMPLETE, handler);
+                
+                loaders.push(loader);
 
                 loader.load(request);
                 itemCount++;
             } else {
                 // too many handled items
             }
-        }
-
-        private function handleUrlLoaderEvent(event:Event):void {
-            dispatchEvent(event); 
         }
 
         private function getEmbeddedUrl():String {

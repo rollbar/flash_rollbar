@@ -1,6 +1,6 @@
-# Rollbar notifier for Flash (ActionScript 3)
+# Rollbar notifier for Flash (AS3)
 
-Flash (AS3) library for reporting exceptions, errors, and log messages to [Rollbar](https://rollbar.com).
+Flash (ActionScript 3) library for reporting exceptions, errors, and log messages to [Rollbar](https://rollbar.com).
 
 <!-- Sub:[TOC] -->
 

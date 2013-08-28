@@ -109,14 +109,14 @@ package com.rollbar.notifier {
             });
         }
 
-        public function handleError(err:Error):void {
+        public function handleError(err:Error, extraData:Object = null):void {
             var stackTrace:String = err.getStackTrace();
             if (stackTrace !== null) {
                 // we got a stack trace (we're in the debug player).
-                handleStackTrace(stackTrace);
+                handleStackTrace(stackTrace, extraData);
             } else {
                 // no stack trace. just report the basics.
-                handlePlainError(err.errorID, err.name, err.message);
+                handlePlainError(err.errorID, err.name, err.message, extraData);
             }
         }
 
@@ -146,12 +146,12 @@ package com.rollbar.notifier {
             }
         }
 
-        private function handleStackTrace(stackTrace:String):void {
-            sendPayload(buildDebugPayload(stackTrace));
+        private function handleStackTrace(stackTrace:String, extraData:Object):void {
+            sendPayload(buildDebugPayload(stackTrace, extraData));
         }
 
-        private function handlePlainError(errorID:int, name:String, message:String):void {
-            sendPayload(buildReleasePayload(errorID, name, message));
+        private function handlePlainError(errorID:int, name:String, message:String, extraData:Object):void {
+            sendPayload(buildReleasePayload(errorID, name, message, extraData));
         }
 
         private function sendPayload(payload:Object):void {
@@ -218,11 +218,11 @@ package com.rollbar.notifier {
          *
          * errorID, name, and message should come from the relevant Error object.
          */
-        private function buildReleasePayload(errorID:int, name:String, message:String):Object {
+        private function buildReleasePayload(errorID:int, name:String, message:String, extraData:Object):Object {
             var messageTitle:String = name + ": " + message;
             var messageBody:String = "Error ID: " + errorID + "\n" + messageTitle;
 
-            var payload:Object = buildCommonPayload();
+            var payload:Object = buildCommonPayload(extraData);
             payload.data.body = {
                 message: {
                     body: messageBody,
@@ -238,10 +238,10 @@ package com.rollbar.notifier {
          *
          * stackTrace should come from error.getStackTrace()
          */
-        private function buildDebugPayload(stackTrace:String):Object {
+        private function buildDebugPayload(stackTrace:String, extraData:Object):Object {
             var stackTraceObj:StackTrace = StackTraceParser.parseStackTrace(srcPath, stackTrace);
 
-            var payload:Object = buildCommonPayload();
+            var payload:Object = buildCommonPayload(extraData);
             payload.data.body = {
                 trace: {
                     frames: stackTraceObj.frames,
@@ -270,7 +270,7 @@ package com.rollbar.notifier {
         /**
          * Builds and returns common payload data. Used by buildReleasePayload and buildDebugPayload.
          */
-        private function buildCommonPayload():Object {
+        private function buildCommonPayload(extraData:Object):Object {
             var tmpPerson:Object = this.person || (this.personFn != null ? this.personFn() : null);
             var userId:String = this.userId || resolveField(['id', 'userId', 'user_id', 'user'], tmpPerson);
             var person:Object;
@@ -342,6 +342,13 @@ package com.rollbar.notifier {
             if (person) {
                 payload['data']['person'] = person;
             }
+            
+            if (extraData) {
+                for (var k:String in extraData) {
+                    payload['data'][k] = extraData[k];
+                }
+            }
+            
             return payload;
         }
         

@@ -45,12 +45,12 @@ package com.rollbar.notifier {
             parent.addChild(notifier);
         }
         
-        public static function handleError(err:Error):void {
+        public static function handleError(err:Error, extraData:Object = null):void {
             if (notifier === null) {
                 trace("WARNING: Rollbar.handleError() called before init(). Call ignored.");
                 return;
             }
-            notifier.handleError(err);
+            notifier.handleError(err, extraData);
         }
 
         public static function handleErrorEvent(event:ErrorEvent):void {

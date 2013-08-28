@@ -1,6 +1,6 @@
-# Rollbar notifier for Flash
+# Rollbar notifier for Flash (ActionScript 3)
 
-Flash/Actionscript notifier for reporting exceptions, errors, and log messages to [Rollbar](https://rollbar.com).
+Flash (AS3) library for reporting exceptions, errors, and log messages to [Rollbar](https://rollbar.com).
 
 <!-- Sub:[TOC] -->
 
@@ -33,9 +33,9 @@ package {
 ## Requirements
 
 - Flash Player 10.1+
-  - May work on 9 but it's untested
+  - May work on 9, but not tested.
 - mxmlc/compc if you plan on building from the command-line
-- A Rollbar account
+- A [Rollbar](http://rollbar.com) account
 
 ## Reporting caught errors
 
@@ -50,6 +50,15 @@ private function onEnterFrame(event:Event) {
     }
 }
 ```
+
+**Advanced:** to override parts of the payload before it is sent to the Rollbar API, pass them in the second argument to `handleError()`. For example, to control how your data will be grouped, you can pass a custom `fingerprint`:
+
+```actionscript
+Rollbar.handleError(err, {fingerprint: "a string to uniquely identify this error"});
+```
+
+The second argument, `extraData`, should be an object. Each key in `extraData` will overwrite the previous contents of the payload. For all options, see the [API documentation](http://rollbar.com/docs/api_items/).
+
 
 ## Configuration
 

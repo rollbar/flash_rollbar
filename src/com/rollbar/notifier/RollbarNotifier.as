@@ -38,7 +38,7 @@ package com.rollbar.notifier {
     public final class RollbarNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.8"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.9"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RollbarNotifier = null;

@@ -23,7 +23,7 @@ package com.rollbar.stacktrace {
             var stackTraceLine:StackTraceLine = new StackTraceLine();
             
             // Grab method name by looking from either ':' or '/' up to and including '()'
-            var methodPat:RegExp = /[:|\/](\w+\(\))/;
+            var methodPat:RegExp = /[:|\/]([\w<>]+\(\))/;
             var methodName:String = methodPat.exec(lineString)[1];
             
             stackTraceLine.method = methodName;

@@ -27,7 +27,7 @@ then
 elif [ "$target" = "swc" ]
 then
     echo 'Building Rollbar SWC into build/swc/Rollbar.swc'
-    compc -include-sources ./src -output build/swc/Rollbar.swc
+    compc -include-sources ./src/com/rollbar/json -include-sources ./src/com/rollbar/notifier -include-sources ./src/com/rollbar/stacktrace -output build/swc/Rollbar.swc
 elif [ "$target" = "test" ]
 then
     echo 'Building test suite into build/swf/testsuite.swf'

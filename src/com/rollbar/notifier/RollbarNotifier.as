@@ -38,7 +38,7 @@ package com.rollbar.notifier {
     public final class RollbarNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.9"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.9.1"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RollbarNotifier = null;
@@ -62,6 +62,7 @@ package com.rollbar.notifier {
         private var branch:String;
         private var rootPath:String;
         private var srcPath:String;
+        private var codeVersion:String;
 
         public function RollbarNotifier(accessToken:String,
                                         environment:String,
@@ -128,6 +129,10 @@ package com.rollbar.notifier {
         public function handleOtherEvent(event:*):void {
             var newError:Error = new Error("A non-Error or ErrorEvent was thrown and not caught: " + event.toString());
             handleError(newError);
+        }
+        
+        public function setCodeVersion(codeVersion:String):void {
+            this.codeVersion = codeVersion;
         }
 
         public function dispose():void {
@@ -338,6 +343,10 @@ package com.rollbar.notifier {
                     notifier: NOTIFIER_DATA
                 }
             };
+            
+            if (this.codeVersion) {
+                payload['data']['code_version'] = this.codeVersion;
+            }
 
             if (person) {
                 payload['data']['person'] = person;

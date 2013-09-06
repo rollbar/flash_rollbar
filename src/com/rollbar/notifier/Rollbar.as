@@ -69,5 +69,13 @@ package com.rollbar.notifier {
             notifier.handleOtherEvent(event);
         }
         
+        public static function setCodeVersion(codeVersion:String):void {
+            if (notifier === null) {
+                trace("WARNING: Rollbar.setCodeVersion() called before init(). Call ignored.");
+                return;
+            }
+            notifier.setCodeVersion(codeVersion);
+        }
+        
     }
 }

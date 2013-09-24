@@ -26,6 +26,8 @@ package com.rollbar.notifier {
     import flash.system.System;
 
     import flash.utils.getTimer;
+    
+    import com.laiyonghao.Uuid;
 
     import com.rollbar.json.JSONEncoder;
     import com.rollbar.stacktrace.StackTrace;
@@ -38,7 +40,7 @@ package com.rollbar.notifier {
     public final class RollbarNotifier extends Sprite {
 
         private static const API_ENDPONT_URL:String = "https://api.rollbar.com/api/1/item/";
-        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.9.1"};
+        private static const NOTIFIER_DATA:Object = {name: "flash_rollbar", version: "0.9.2"};
         private static const MAX_ITEM_COUNT:int = 5;
 
         private static var instance:RollbarNotifier = null;
@@ -110,53 +112,57 @@ package com.rollbar.notifier {
             });
         }
 
-        public function handleError(err:Error, extraData:Object = null):void {
+        public function dispose():void {
+        }
+
+        public function handleError(err:Error, extraData:Object = null):String {
             var stackTrace:String = err.getStackTrace();
             if (stackTrace !== null) {
                 // we got a stack trace (we're in the debug player).
-                handleStackTrace(stackTrace, extraData);
+                return handleStackTrace(stackTrace, extraData);
             } else {
                 // no stack trace. just report the basics.
-                handlePlainError(err.errorID, err.name, err.message, extraData);
+                return handlePlainError(err.errorID, err.name, err.message, extraData);
             }
         }
 
-        public function handleErrorEvent(event:ErrorEvent):void {
+        public function handleErrorEvent(event:ErrorEvent):String {
             var newError:Error = new Error("An ErrorEvent was thrown and not caught: " + event.toString());
-            handleError(newError);
+            return handleError(newError);
         }
 
-        public function handleOtherEvent(event:*):void {
+        public function handleOtherEvent(event:*):String {
             var newError:Error = new Error("A non-Error or ErrorEvent was thrown and not caught: " + event.toString());
-            handleError(newError);
+            return handleError(newError);
         }
         
         public function setCodeVersion(codeVersion:String):void {
             this.codeVersion = codeVersion;
         }
 
-        public function dispose():void {
-        }
-
-        private function handleUncaughtError(event:UncaughtErrorEvent):void {
+        private function handleUncaughtError(event:UncaughtErrorEvent):String {
             if (event.error is Error) {
                 var error:Error = event.error as Error;
-                handleError(error);
+                return handleError(error);
             } else if (event.error is ErrorEvent) {
                 var errorEvent:ErrorEvent = event.error as ErrorEvent;
-                handleErrorEvent(errorEvent);
+                return handleErrorEvent(errorEvent);
             } else {
                 // Inform the user that a non-error event was thrown and not caught.
-                handleOtherEvent(event);
+                return handleOtherEvent(event);
             }
         }
 
-        private function handleStackTrace(stackTrace:String, extraData:Object):void {
-            sendPayload(buildDebugPayload(stackTrace, extraData));
+        private function handleStackTrace(stackTrace:String, extraData:Object):String {
+            var payload:Object = buildDebugPayload(stackTrace, extraData);
+            sendPayload(payload);
+            return payload['data']['uuid'];
         }
 
-        private function handlePlainError(errorID:int, name:String, message:String, extraData:Object):void {
-            sendPayload(buildReleasePayload(errorID, name, message, extraData));
+        private function handlePlainError(errorID:int, name:String, message:String, extraData:Object):String {
+            var payload:Object = buildReleasePayload(errorID, name, message, extraData);
+            sendPayload(payload);
+            return payload['data']['uuid'];
         }
 
         private function sendPayload(payload:Object):void {
@@ -340,7 +346,8 @@ package com.rollbar.notifier {
                         }
                     },
                     server: serverData,
-                    notifier: NOTIFIER_DATA
+                    notifier: NOTIFIER_DATA,
+                    uuid: new Uuid().toString().toLowerCase()
                 }
             };
             

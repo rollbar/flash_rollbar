@@ -45,28 +45,28 @@ package com.rollbar.notifier {
             parent.addChild(notifier);
         }
         
-        public static function handleError(err:Error, extraData:Object = null):void {
+        public static function handleError(err:Error, extraData:Object = null):String {
             if (notifier === null) {
                 trace("WARNING: Rollbar.handleError() called before init(). Call ignored.");
-                return;
+                return null;
             }
-            notifier.handleError(err, extraData);
+            return notifier.handleError(err, extraData);
         }
 
-        public static function handleErrorEvent(event:ErrorEvent):void {
+        public static function handleErrorEvent(event:ErrorEvent):String {
             if (notifier === null) {
                 trace("WARNING: Rollbar.handleErrorEvent() called before init(). Call ignored.");
-                return;
+                return null;
             }
-            notifier.handleErrorEvent(event);
+            return notifier.handleErrorEvent(event);
         }
 
-        public static function handleOtherEvent(event:*):void {
+        public static function handleOtherEvent(event:*):String {
             if (notifier === null) {
                 trace("WARNING: Rollbar.handleOtherEvent() called before init(). Call ignored.");
-                return;
+                return null;
             }
-            notifier.handleOtherEvent(event);
+            return notifier.handleOtherEvent(event);
         }
         
         public static function setCodeVersion(codeVersion:String):void {

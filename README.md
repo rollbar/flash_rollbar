@@ -1,5 +1,6 @@
 # Rollbar notifier for Flash (AS3)
 
+<!-- RemoveNext -->
 Flash (ActionScript 3) library for reporting exceptions, errors, and log messages to [Rollbar](https://rollbar.com).
 
 <!-- Sub:[TOC] -->
@@ -29,6 +30,10 @@ package {
 
 
 ```Rollbar.init()``` installed a global error handler, so you don't need to do anything else.
+
+<!-- RemoveNextIfProject -->
+Be sure to replace ```POST_CLIENT_ITEM_ACCESS_TOKEN``` with your project's ```post_client_item``` access token, which you can find in the Rollbar.com interface.
+
 
 ## Requirements
 

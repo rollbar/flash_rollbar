@@ -13,7 +13,7 @@ Flash (ActionScript 3) library for reporting exceptions, errors, and log message
 
 ```actionscript
 package {
-  import com.rollbar.notifier.RollbarNotifier;
+  import com.rollbar.notifier.Rollbar;
 
   public class MyApp extends Sprite {
     

@@ -16,7 +16,7 @@ package {
   import com.rollbar.notifier.Rollbar;
 
   public class MyApp extends Sprite {
-    
+
     public static const ROLLBAR_ACCESS_TOKEN:String = "POST_CLIENT_ITEM_ACCESS_TOKEN";
 
     public function MyApp() {
@@ -68,7 +68,7 @@ The second argument, `extraData`, should be an object. Each key in `extraData` w
 ## Configuration
 
 At the topmost level of your display list, instantiate the Rollbar singleton.
-    
+
 ```actionscript
 Rollbar.init(this, accessToken, environment);
 ```
@@ -76,29 +76,36 @@ Rollbar.init(this, accessToken, environment);
 Here's the full list of constructor parameters (in order):
 
   <dl>
-  <dt>parent</dt>
-  <dd>The parent display object container; should usually be ```this```. The notifier will report all errors for SWFs that are loaded with ```parent.loaderInfo```.</dd>
-  <dt>accessToken</dt>
-  <dd>Access token from your Rollbar project</dd>
-  <dt>environment</dt>
-  <dd>Environment name. Any string up to 255 chars is OK. For best results, use ```"production"``` for your production environment.
+<dt>parent
+</dt>
+<dd>The parent display object container; should usually be ```this```. The notifier will report all errors for SWFs that are loaded with ```parent.loaderInfo```.
+</dd>
+<dt>accessToken
+</dt>
+<dd>Access token from your Rollbar project
+</dd>
+<dt>environment
+</dt>
+<dd>Environment name. Any string up to 255 chars is OK. For best results, use ```"production"``` for your production environment.
 
 Default: ``"production"``
 
-  </dd>
-  <dt>person</dt>
-  <dd>Optional but can be one of:
+</dd>
+<dt>person
+</dt>
+<dd>Optional but can be one of:
 
-- A string identifier for the current person/user.
-- An object describing the current person/user, containing
-  - Required - id, userId, user_id, user
-  - Optional - email, userEmail, user_email, emailAddress, email_address
-  - Optional - username, userName, user_name, name
-- A function returning an object like the one described above
+  - A string identifier for the current person/user.
+  - An object describing the current person/user, containing
+    - Required - id, userId, user_id, user
+    - Optional - email, userEmail, user_email, emailAddress, email_address
+    - Optional - username, userName, user_name, name
+  - A function returning an object like the one described above
 
-  </dd>
-  <dt>rootPath</dt>
-  <dd>If you compiled the SWC/SWF using the debug or verbose stack trace flags, you'll want this to be the absolute path to the root of your Actionscript source code, not including the final ```/```.
+</dd>
+<dt>rootPath
+</dt>
+<dd>If you compiled the SWC/SWF using the debug or verbose stack trace flags, you'll want this to be the absolute path to the root of your Actionscript source code, not including the final ```/```.
 
 Otherwise, set this to the source path relative to your repository's root.
 e.g. if your source tree looks like this:
@@ -108,20 +115,26 @@ e.g. if your source tree looks like this:
 
 Set this to ```"src"```
 
-  </dd>
-  <dt>codeBranch</dt>
-  <dd>Name of the branch used to compile your Flash movie.
+</dd>
+<dt>codeBranch
+</dt>
+<dd>Name of the branch used to compile your Flash movie.
 
 Default: ```"master"```
 
-  </dd>
-  <dt>serverData</dt>
-  <dd>An Object containing any data you would like to pass along with this item to store.</dd>
-  <dt>maxItemCount</dt>
-  <dd>The maximum number of items to send to Rollbar for the lifetime of the notifier instance. This is useful for rate-limiting the number of items sent to Rollbar.</dd>
-  <dt>endpointUrl</dt>
-  <dd>URL items are posted to.
-    
+</dd>
+<dt>serverData
+</dt>
+<dd>An Object containing any data you would like to pass along with this item to store.
+</dd>
+<dt>maxItemCount
+</dt>
+<dd>The maximum number of items to send to Rollbar for the lifetime of the notifier instance. This is useful for rate-limiting the number of items sent to Rollbar.
+</dd>
+<dt>endpointUrl
+</dt>
+<dd>URL items are posted to.
+
 Default: ```"https://api.rollbar.com/api/1/item/"```
-  </dd>
-  </dl>
+</dd>
+</dl>

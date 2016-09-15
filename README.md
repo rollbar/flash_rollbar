@@ -62,7 +62,7 @@ private function onEnterFrame(event:Event) {
 Rollbar.handleError(err, {fingerprint: "a string to uniquely identify this error"});
 ```
 
-The second argument, `extraData`, should be an object. Each key in `extraData` will overwrite the previous contents of the payload. For all options, see the [API documentation](http://rollbar.com/docs/api_items/).
+The second argument, `extraData`, should be an object. Each key in `extraData` will overwrite the previous contents of the payload. For all options, see the [API documentation](https://rollbar.com/docs/api/items_post/).
 
 
 ## Configuration

@@ -131,8 +131,8 @@ package com.rollbar.notifier {
             return handleError(newError);
         }
 
-        public function handleOtherEvent(event:*):String {
-            var newError:Error = new Error("A non-Error or ErrorEvent was thrown and not caught: " + event.toString());
+        public function handleOtherEvent(error:*):String {
+            var newError:Error = new Error("A non-Error or ErrorEvent was thrown and not caught: " + error.toString());
             return handleError(newError);
         }
         
@@ -149,7 +149,7 @@ package com.rollbar.notifier {
                 return handleErrorEvent(errorEvent);
             } else {
                 // Inform the user that a non-error event was thrown and not caught.
-                return handleOtherEvent(event);
+                return handleOtherEvent(event.error);
             }
         }
 
